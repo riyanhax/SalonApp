@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Saloon App</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="find_us">Find Us</string>
+    <string name="job">Job</string>
+    <string name="call_us">Call Us</string>
+    <string name="shop_now">Products</string>
+    <string name="appointment">Appointment</string>
+    <string name="services">Services</string>
+</resources>
