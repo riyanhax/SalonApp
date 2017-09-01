@@ -4,7 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               xmlns:tools="http://schemas.android.com/tools"
-              android:background="@color/colorPrimary"
     >
 
 
@@ -31,7 +30,7 @@
             tools:text="Color"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/services_price"
@@ -39,7 +38,7 @@
             android:layout_height="wrap_content"
             tools:text="Starting at N1000"
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:layout_marginTop="8dp"/>
     </LinearLayout>
 

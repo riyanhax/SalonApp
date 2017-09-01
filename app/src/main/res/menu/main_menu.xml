@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <item
+        android:title="Menu"
+        android:icon="@mipmap/ic_menu"
+        android:orderInCategory="101"
+        app:showAsAction="always">
+        <menu>
+
+            <group android:id="@+id/group_1" >
+
+                <item
+                    android:icon="@mipmap/ic_account"
+                    android:id="@+id/account"
+                    android:title="My account"
+                    app:showAsAction="always|withText"
+                    />
+
+            </group>
+
+            <group android:id="@+id/group_3" >
+
+                <item
+                    android:icon="@mipmap/ic_sign_in"
+                    android:id="@+id/sign_in"
+                    android:title="Sign in"
+                    app:showAsAction="always|withText"
+                    />
+
+
+            </group>
+
+            <item
+                android:icon="@mipmap/ic_sign_in"
+                android:id="@+id/wishlist"
+                android:title="Wishlist"
+                app:showAsAction="always|withText"
+                />
+        </menu>
+
+        </item>
+
+
+
+
+
+</menu>

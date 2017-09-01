@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.raynold.saloonapp.JobActivity">
+    tools:context="com.example.raynold.saloonapp.Activity.JobActivity">
 
     <include layout="@layout/drawer_toolbar" android:id="@+id/job_toolbar"
              android:layout_width="368dp"

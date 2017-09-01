@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp;
+package com.example.raynold.saloonapp.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.raynold.saloonapp.Model.Services;
+import com.example.raynold.saloonapp.R;
 
 import java.util.List;
 

@@ -1,9 +1,11 @@
-package com.example.raynold.saloonapp;
+package com.example.raynold.saloonapp.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.example.raynold.saloonapp.R;
 
 public class JobActivity extends AppCompatActivity {
 

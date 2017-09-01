@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp;
+package com.example.raynold.saloonapp.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.raynold.saloonapp.Model.HairStyle;
+import com.example.raynold.saloonapp.R;
 
 import java.util.List;
 
@@ -18,11 +19,19 @@ import java.util.List;
 
 public class HairStyleAdapter extends RecyclerView.Adapter<HairStyleAdapter.HairStyleViewHolder> {
 
+    private ListItemClickListener mOnclickListener;
+
     private List<HairStyle> mHairStyles;
 
-    public HairStyleAdapter(List<HairStyle> hairStyles) {
+    public HairStyleAdapter(List<HairStyle> hairStyles, ListItemClickListener itemClickListener) {
         this.mHairStyles = hairStyles;
+        mOnclickListener = itemClickListener;
     }
+
+    public interface ListItemClickListener {
+        void onListItemClick(HairStyle clickedItem);
+    }
+
 
     @Override
     public void onBindViewHolder(HairStyleViewHolder holder, int position, List<Object> payloads) {
@@ -46,9 +55,9 @@ public class HairStyleAdapter extends RecyclerView.Adapter<HairStyleAdapter.Hair
     public void onBindViewHolder(HairStyleViewHolder holder, int position) {
 
         HairStyle hairStyle = mHairStyles.get(position);
-        holder.mTitle.setText(hairStyle.getTitle());
-        holder.mDescription.setText(hairStyle.getDescription());
-        holder.mPrice.setText(hairStyle.getPrice());
+        //holder.mTitle.setText(hairStyle.getTitle());
+        //holder.mDescription.setText(hairStyle.getDescription());
+        //holder.mPrice.setText(hairStyle.getPrice());
         holder.mImageView.setImageResource(hairStyle.getPicUrl());
 
     }
@@ -59,7 +68,7 @@ public class HairStyleAdapter extends RecyclerView.Adapter<HairStyleAdapter.Hair
     }
 
 
-    public class HairStyleViewHolder extends RecyclerView.ViewHolder {
+    public class HairStyleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView mTitle;
         public TextView mDescription;
@@ -68,10 +77,17 @@ public class HairStyleAdapter extends RecyclerView.Adapter<HairStyleAdapter.Hair
 
         public HairStyleViewHolder(View itemView) {
             super(itemView);
-            mTitle = (TextView) itemView.findViewById(R.id.hair_title);
-            mDescription = (TextView) itemView.findViewById(R.id.hair_description);
-            mPrice = (TextView) itemView.findViewById(R.id.price);
+            //mTitle = (TextView) itemView.findViewById(R.id.hair_title);
+            //mDescription = (TextView) itemView.findViewById(R.id.hair_description);
+            //mPrice = (TextView) itemView.findViewById(R.id.price);
             mImageView = (ImageView) itemView.findViewById(R.id.style_pic);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnclickListener.onListItemClick(mHairStyles.get(clickedPosition));
         }
     }
 }
