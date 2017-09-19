@@ -11,7 +11,9 @@ public class Appointment {
     private String mStartTime;
     private String mEndTime;
     private String mBook;
-    private int mDay;
+    private String mDate;
+
+    public Appointment(){}
 
     public Appointment(String startTime, String endTime, String book ) {
         mStartTime = startTime;
@@ -20,16 +22,16 @@ public class Appointment {
 
     }
 
-    public Appointment(int date) {
-        mDay = date;
+    public Appointment(String date) {
+        mDate = date;
     }
 
-    public int getDay() {
-        return mDay;
+    public String getDay() {
+        return mDate;
     }
 
-    public void setDay(int day) {
-        mDay = day;
+    public void setDay(String day) {
+        mDate = day;
     }
 
     public String getStartTime() {

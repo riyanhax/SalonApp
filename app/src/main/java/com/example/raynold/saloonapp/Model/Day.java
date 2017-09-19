@@ -6,17 +6,17 @@ package com.example.raynold.saloonapp.Model;
 
 public class Day {
 
-    private int mDay;
+    private String mDay;
 
-    public Day(int day) {
+    public Day(String day) {
         mDay = day;
     }
 
-    public int getDay() {
+    public String getDay() {
         return mDay;
     }
 
-    public void setDay(int day) {
+    public void setDay(String day) {
         mDay = day;
     }
 }

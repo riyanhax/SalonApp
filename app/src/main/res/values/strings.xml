@@ -3,10 +3,25 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="find_us">Find Us</string>
-    <string name="job">Job</string>
+    <string name="saved">Saved</string>
     <string name="call_us">Call Us</string>
     <string name="shop_now">Products</string>
     <string name="appointment">Appointment</string>
     <string name="services">Services</string>
     <string name="title_activity_maps">Map</string>
+    <string name="sign_in">Sign in</string>
+    <string name="enter_password">Enter password</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="password_6_16_chars">Password, 6-16 chars</string>
+    <string name="username">Username</string>
+    <string name="done">Done</string>
+
+    <string-array name="examples">
+        <item>Appointments</item>
+        <item>Swipe to delete</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

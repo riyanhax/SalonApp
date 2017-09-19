@@ -1,52 +1,68 @@
 package com.example.raynold.saloonapp.Model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 /**
  * Created by RAYNOLD on 8/29/2017.
  */
-
+@Entity
 public class Shop {
 
-    private String mPName;
-    private int mPImage;
-    private int mPrice;
-    private String mLocation;
+    @PrimaryKey
+    private String name;
+    private String image;
+    private String price;
+    private String location;
+    private String detail;
 
-    public Shop(String PName, int PImage, int price, String mpLocation) {
-        mPName = PName;
-        mPImage = PImage;
-        mPrice = price;
-        this.mLocation = mpLocation;
+    public Shop(){}
+
+    public Shop(String name, String image, String price, String location, String detail) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+        this.location = location;
+        this.detail = detail;
     }
 
-    public String getPName() {
-        return mPName;
+    public String getDetails() {
+        return detail;
     }
 
-    public void setPName(String PName) {
-        mPName = PName;
+    public void setDetails(String details) {
+        this.detail = detail;
     }
 
-    public int getPImage() {
-        return mPImage;
+    public String getName() {
+        return name;
     }
 
-    public void setPImage(int PImage) {
-        mPImage = PImage;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getPrice() {
-        return mPrice;
+    public String getImage() {
+        return image;
     }
 
-    public void setPrice(int price) {
-        mPrice = price;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getMLocation() {
-        return mLocation;
+    public String getPrice() {
+        return price;
     }
 
-    public void setMLocation(String mpLocation) {
-        this.mLocation = mpLocation;
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

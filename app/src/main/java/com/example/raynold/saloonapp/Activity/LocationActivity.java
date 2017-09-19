@@ -49,7 +49,6 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         setSupportActionBar(mLocationToolbar);
         getSupportActionBar().setTitle("Location");
 
-
         setSupportActionBar(mLocationToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

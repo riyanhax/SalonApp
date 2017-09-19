@@ -1,11 +1,16 @@
 package com.example.raynold.saloonapp.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,14 +23,33 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.raynold.saloonapp.Model.HairStyle;
 import com.example.raynold.saloonapp.Adapter.HairStyleAdapter;
 import com.example.raynold.saloonapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.rom4ek.arcnavigationview.ArcNavigationView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HairStyleAdapter.ListItemClickListener {
 
@@ -37,19 +61,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private Toolbar mToolbar;
     private RecyclerView.ItemDecoration mItemDecoration;
+    private Button mGotoLogin;
+    private ArcNavigationView mNavigationView;
+    private FirebaseAuth mAuth;
+    private LinearLayout mLinearLayout;
+    private LinearLayout mLoggedOutLayout;
+    private CircleImageView mCircleImageView;
+    private DatabaseReference mUserRef;
+    private TextView mHeaderUsername;
+    private TextView mHeaderEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Views reference
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open, R.string.close);
         mHairRecyclerview = (RecyclerView) findViewById(R.id.style_recyclerview);
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        mNavigationView = (ArcNavigationView) findViewById(R.id.nav_view);
 
-        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+
+        //Firebase Connections
+
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mUserRef.keepSynced(true);
+
+        //Nav header ref
+        View header = mNavigationView.getHeaderView(0);
+        mGotoLogin = (Button) header.findViewById(R.id.goto_login_activity);
+        mLinearLayout = (LinearLayout) header.findViewById(R.id.logged_in_layout);
+        mLoggedOutLayout = (LinearLayout) header.findViewById(R.id.logged_out_layout);
+        mCircleImageView = (CircleImageView) header.findViewById(R.id.thumb_image);
+        mHeaderEmail = (TextView) header.findViewById(R.id.header_email);
+        mHeaderUsername = (TextView) header.findViewById(R.id.header_username);
+
+
+                mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
 
         mHairRecyclerview.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(5), true));
@@ -71,10 +122,124 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mHairRecyclerview.setAdapter(mStyleAdapter);
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationIcon(R.mipmap.ic_launcher);
+
+        //mToolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        getSupportActionBar().setIcon(android.R.color.transparent);
 
         setNavigationViewListener();
+
+        mGotoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, LogInActivity.class));
+            }
+        });
+
+        getUserData();
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onPostCreate(savedInstanceState);
+        mActionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // TODO Auto-generated method stub
+        super.onConfigurationChanged(newConfig);
+        mActionBarDrawerToggle.onConfigurationChanged(newConfig);
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+// Get details on the currently active default data network
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+            if (currentUser != null) {
+
+                mLinearLayout.setVisibility(View.VISIBLE);
+                mLoggedOutLayout.setVisibility(View.INVISIBLE);
+            }
+
+        } else {
+
+            Toasty.error(this, "Check your network conection", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void getUserData() {
+
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            String userUid = mAuth.getCurrentUser().getUid();
+            mUserRef.child(userUid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    mHeaderUsername.setText(dataSnapshot.child("name").getValue().toString());
+                    mHeaderEmail.setText(dataSnapshot.child("email").getValue().toString());
+
+                    final String defaultImage = dataSnapshot.child("thumb_image").getValue().toString();
+                    if (defaultImage.equals("default")) {
+                        Picasso.with(MainActivity.this).load(R.mipmap.ic_default_image).into(mCircleImageView);
+                    } else {
+
+                        Picasso.with(MainActivity.this).load(defaultImage).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.mipmap.ic_default_image).into(mCircleImageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                Picasso.with(MainActivity.this).load(defaultImage).placeholder(R.mipmap.ic_default_image).into(mCircleImageView);
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(MainActivity.this).load(defaultImage).placeholder(R.mipmap.ic_default_image).into(mCircleImageView);
+                            }
+                        });
+                    }
+
+
+                    if (mAuth.getCurrentUser() != null) {
+
+                        mLinearLayout.setClickable(true);
+                        mLinearLayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                            }
+                        });
+                    } else {
+                        mLinearLayout.setClickable(false);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            mLoggedOutLayout.setVisibility(View.VISIBLE);
+            mLinearLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -92,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
 
             case R.id.menu_job:
-                startActivity(new Intent(MainActivity.this, JobActivity.class));
+                startActivity(new Intent(MainActivity.this, WishList.class));
                 break;
 
             case R.id.menu_appointment:
@@ -121,12 +286,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
+
 
     /**
      * Converting dp to pixel

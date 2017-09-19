@@ -20,9 +20,16 @@ import java.util.List;
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder> {
 
     List<Appointment> mAppointmentList;
+    private AppointmentClickListener mAppointmentClickListener;
 
-    public AppointmentAdapter(List<Appointment> appointmentList) {
+    public AppointmentAdapter(List<Appointment> appointmentList, AppointmentClickListener appointmentClickListener) {
         mAppointmentList = appointmentList;
+        mAppointmentClickListener = appointmentClickListener;
+    }
+
+    public interface AppointmentClickListener {
+
+        void onClickeListerner(Appointment appointment);
     }
 
     @Override
@@ -52,7 +59,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
 
-    public class AppointmentViewHolder extends RecyclerView.ViewHolder {
+    public class AppointmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView mStartTime;
         TextView mEndTime;
@@ -64,6 +71,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             mEndTime = (TextView) itemView.findViewById(R.id.end_time);
             mStartTime = (TextView) itemView.findViewById(R.id.start_time);
             mBook = (Button) itemView.findViewById(R.id.book_btn);
+            mBook.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mAppointmentClickListener.onClickeListerner(mAppointmentList.get(clickedPosition));
         }
     }
 }

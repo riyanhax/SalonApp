@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
 
 
@@ -8,7 +9,8 @@
         android:title="Menu"
         android:icon="@mipmap/ic_menu"
         android:orderInCategory="101"
-        app:showAsAction="always">
+        app:showAsAction="always"
+        >
         <menu>
 
             <group android:id="@+id/group_1" >

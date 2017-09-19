@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="200dp"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
 
     >
     <View
@@ -13,26 +14,81 @@
 
     </View>
 
+    <LinearLayout
+        android:id="@+id/logged_in_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        android:padding="16dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/thumb_image"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="40dp"
+            tools:src="@drawable/natural_graduated_bob"/>
+
+        <TextView
+            android:id="@+id/header_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            tools:text="Machi Wokekoro"/>
+
     <TextView
-        android:id="@+id/header"
+        android:id="@+id/header_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Iconic Saloon"
-        android:textColor="@android:color/white"
-        android:textSize="35sp"
-        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        tools:text="machiwokekoro@gmail.com"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/logged_out_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_centerVertical="true"
-        android:textStyle="bold"
-        />
-    <TextView
-        android:id="@+id/second_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get that hair done"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:layout_marginTop="8dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/header"/>
+        android:visibility="invisible"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lumo Naturals"
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All things natural"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            />
+
+        <Button
+            android:id="@+id/goto_login_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_corners"
+            android:text="Login"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>
