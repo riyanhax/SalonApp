@@ -2,9 +2,9 @@ package com.example.raynold.saloonapp.data;
 
 import android.arch.lifecycle.LiveData;
 
-import com.example.raynold.saloonapp.Model.Shop;
-
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by RAYNOLD on 9/19/2017.
@@ -14,19 +14,24 @@ public class SavedItemRepository {
 
     private final ShopDao mShopDao;
 
+    @Inject
     public SavedItemRepository(ShopDao shop) {
         mShopDao = shop;
     }
 
-    public LiveData<Shop> getShopItem(String itemId) {
+    public LiveData<List<WishListModel>> getListOfData(){
+        return mShopDao.getShopSavedItems();
+    }
+
+    public LiveData<WishListModel> getListItem(String itemId){
         return mShopDao.getShopItemById(itemId);
     }
 
-    public void deleteShopItem(Shop itemId) {
-        mShopDao.deleteShopItem(itemId);
+    public Long createNewListItem(WishListModel listItem){
+        return mShopDao.insertShopSavedItems(listItem);
     }
 
-    public void insertShopItem(Shop itemId) {
-        mShopDao.insertShopSavedItems(itemId);
+    public void deleteListItem(WishListModel listItem){
+        mShopDao.deleteShopItem(listItem);
     }
 }

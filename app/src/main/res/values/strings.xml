@@ -17,6 +17,12 @@
     <string name="username">Username</string>
     <string name="done">Done</string>
 
+    <!-- used as tags for shared element transitions -->
+    <string name="transition_drawable">drawable</string>
+    <string name="transition_message">name</string>
+    <string name="transition_price">price</string>
+    <string name="transition_button">details</string>
+
     <string-array name="examples">
         <item>Appointments</item>
         <item>Swipe to delete</item>

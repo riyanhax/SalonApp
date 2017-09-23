@@ -9,7 +9,7 @@ import com.example.raynold.saloonapp.Model.Shop;
  * Created by RAYNOLD on 9/19/2017.
  */
 
-@Database(entities = {Shop.class},version = 1)
+@Database(entities = {WishListModel.class},version = 1)
 public abstract class SavedItemDatabase extends RoomDatabase {
 
     public abstract ShopDao mShopDao();

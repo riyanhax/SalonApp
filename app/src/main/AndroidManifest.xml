@@ -13,6 +13,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+
     <application
         android:name=".Model.Lumo"
         android:allowBackup="true"
@@ -47,7 +48,11 @@
         </activity>
         <activity android:name=".Activity.ServicesActivity">
         </activity>
-        <activity android:name=".Activity.JobActivity">
+        <activity android:name=".saved.WishList"
+            android:parentActivityName=".Activity.MainActivity">
+            <meta-data
+                android:name="ParentActivityName"
+                android:value=".Activity.ShopActivity"/>
         </activity>
         <activity android:name=".Activity.AccountActivity">
         </activity>
@@ -59,21 +64,22 @@
         </activity>
         <activity
             android:name=".Activity.ProductDetailActivity"
+            >
+
+        </activity>
+        <activity
+            android:name=".Activity.AddProductActivity"
             android:parentActivityName=".Activity.ShopActivity">
             <meta-data
                 android:name="ParentActivityName"
                 android:value=".Activity.ShopActivity"/>
         </activity>
-        <activity android:name=".Activity.AddProductActivity"
-            android:parentActivityName=".Activity.ShopActivity">
-            <meta-data
-                android:name="ParentActivityName"
-                android:value=".Activity.ShopActivity"
-                />
-        </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
+        <activity android:name=".detail.WishListDetailActivity">
+        </activity>
+
     </application>
 
 </manifest>

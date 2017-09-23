@@ -4,17 +4,13 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="horizontal"
-              android:paddingBottom="8dp"
+              android:padding="8dp"
     >
 
-
     <ImageView
-        android:id="@+id/services_pic"
+        android:id="@+id/wishlist_image"
         android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
+        android:layout_height="100dp"
         tools:src="@drawable/no_image_placeholder"
         />
 
@@ -22,35 +18,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingLeft="16dp">
 
         <TextView
-            android:id="@+id/services_title"
+            android:id="@+id/wishlist_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:text="Color"/>
-
-        <TextView
-            android:id="@+id/services_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="4"
-            android:textSize="15sp"
-            tools:text="Information"
-            />
-
-        <TextView
-            android:id="@+id/services_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
             android:textSize="18sp"
-            tools:text="Starting at N1000"
-            />
+            tools:text="Product name"/>
+
+        <TextView
+            android:id="@+id/wishlist_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            tools:text="N 2999"/>
+
+        <Button
+            android:id="@+id/wishlist_product_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@color/colorPrimary"
+            android:padding="16dp"
+            android:text="Product detail"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"/>
+
     </LinearLayout>
+
 
 </LinearLayout>

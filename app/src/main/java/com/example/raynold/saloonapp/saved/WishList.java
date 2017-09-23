@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.saved;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;

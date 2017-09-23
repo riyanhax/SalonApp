@@ -20,7 +20,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +30,7 @@ import android.widget.Toast;
 import com.example.raynold.saloonapp.Model.HairStyle;
 import com.example.raynold.saloonapp.Adapter.HairStyleAdapter;
 import com.example.raynold.saloonapp.R;
+import com.example.raynold.saloonapp.saved.WishList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,8 +42,6 @@ import com.rom4ek.arcnavigationview.ArcNavigationView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,10 +108,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mHairStyleList = new ArrayList<>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
 
+            mHairStyleList.add(new HairStyle("Brazillian Wig", "Cut hair, Faded black", "5000", R.drawable.c_kinky_hair_type));
+            mHairStyleList.add(new HairStyle("Brazillian Wig", "Cut hair, Faded black", "2000", R.drawable.b_kinky_hair_type));
             mHairStyleList.add(new HairStyle("Brazillian Wig", "Cut hair, Faded black", "5000", R.drawable.natural_graduated_bob));
-            mHairStyleList.add(new HairStyle("Brazillian Wig", "Cut hair, Faded black", "2000", R.drawable.pixiew_with_long_bangs));
+            mHairStyleList.add(new HairStyle("Brazillian Wig", "Cut hair, Faded black", "2000", R.drawable.kinky_hair_type));
         }
 
 
@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         getUserData();
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("ILumo");
 
     }
 

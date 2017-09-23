@@ -9,11 +9,21 @@ public class Services {
     private String mTitle;
     private String mPrice;
     private int mImageResource;
+    private String mDetails;
 
-    public Services(String title, String price, int imageResource) {
+    public Services(String title, String price, int imageResource, String details) {
         mTitle = title;
         mPrice = price;
         mImageResource = imageResource;
+        mDetails = details;
+    }
+
+    public String getDetails() {
+        return mDetails;
+    }
+
+    public void setDetails(String details) {
+        mDetails = details;
     }
 
     public String getTitle() {

@@ -1,16 +1,28 @@
 package com.example.raynold.saloonapp.Adapter;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.raynold.saloonapp.Model.Services;
 import com.example.raynold.saloonapp.R;
+import com.example.raynold.saloonapp.data.WishListModel;
+import com.example.raynold.saloonapp.saved.WishListFragment;
+import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
+import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -20,10 +32,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ServicesViewHolder> {
 
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
     List<Services> mServices;
+    private ListItemClickListener mOnclickListener;
+    private NewShopItemViewModel newListItemViewModel;
 
-    public ServicesAdapter(List<Services> services) {
+    public ServicesAdapter(List<Services> services, ListItemClickListener listener) {
         mServices = services;
+        mOnclickListener = listener;
     }
 
 
@@ -39,7 +56,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToImmediately = false;
         View view = inflater.inflate(layoutIdForItem, parent, shouldAttachToImmediately);
-       ServicesViewHolder developerAdapterViewHolder = new ServicesViewHolder(view);
+        ServicesViewHolder developerAdapterViewHolder = new ServicesViewHolder(view);
 
         return developerAdapterViewHolder;
     }
@@ -52,6 +69,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         holder.mTitle.setText(services.getTitle());
         holder.mPrice.setText(services.getPrice());
         holder.mServiceImage.setImageResource(services.getImageResource());
+        holder.mDetails.setText(services.getDetails());
 
     }
 
@@ -60,19 +78,32 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         return mServices.size();
     }
 
-    public class ServicesViewHolder extends RecyclerView.ViewHolder {
+    public interface ListItemClickListener {
+        void onListItemClick(Services services);
+    }
+
+    public class ServicesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView mTitle;
         TextView mPrice;
-        CircleImageView mServiceImage;
+        ImageView mServiceImage;
+        TextView mDetails;
 
         public ServicesViewHolder(View itemView) {
             super(itemView);
 
             mTitle = (TextView) itemView.findViewById(R.id.services_title);
             mPrice = (TextView) itemView.findViewById(R.id.services_price);
-            mServiceImage = (CircleImageView) itemView.findViewById(R.id.services_pic);
+            mServiceImage = (ImageView) itemView.findViewById(R.id.services_pic);
+            mDetails = (TextView) itemView.findViewById(R.id.services_details);
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+
+            int clickedPosition = getAdapterPosition();
+            mOnclickListener.onListItemClick(mServices.get(clickedPosition));
+        }
     }
 }

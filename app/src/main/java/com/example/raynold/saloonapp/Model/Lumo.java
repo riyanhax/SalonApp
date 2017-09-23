@@ -2,6 +2,10 @@ package com.example.raynold.saloonapp.Model;
 
 import android.app.Application;
 
+import com.example.raynold.saloonapp.dependencyInjection.ApplicationComponent;
+import com.example.raynold.saloonapp.dependencyInjection.ApplicationModule;
+import com.example.raynold.saloonapp.dependencyInjection.DaggerApplicationComponent;
+import com.example.raynold.saloonapp.dependencyInjection.RoomModule;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -11,6 +15,7 @@ import com.squareup.picasso.Picasso;
  */
 
 public class Lumo extends Application{
+    private ApplicationComponent mApplicationComponemt;
 
     @Override
     public void onCreate() {
@@ -24,5 +29,14 @@ public class Lumo extends Application{
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
+
+        mApplicationComponemt = DaggerApplicationComponent
+                .builder()
+                .applicationModule(new ApplicationModule(this))
+                .roomModule(new RoomModule(this))
+                .build();
+    }
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponemt;
     }
 }

@@ -18,16 +18,16 @@ import java.util.List;
 @Dao
 public interface ShopDao {
 
-    @Query("SELECT * FROM Shop")
-    LiveData<List<Shop>> getShopSavedItems();
+    @Query("SELECT * FROM WishListModel")
+    LiveData<List<WishListModel>> getShopSavedItems();
 
-    @Query("SELECT * FROM Shop WHERE itemId = :itemId")
-    LiveData<Shop> getShopItemById(String itemId);
+    @Query("SELECT * FROM WishListModel WHERE itemId = :itemId")
+    LiveData<WishListModel> getShopItemById(String itemId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Long insertShopSavedItems(Shop shop);
+    Long insertShopSavedItems(WishListModel wishListModel);
 
     @Delete
-    void deleteShopItem(Shop shop);
+    void deleteShopItem(WishListModel wishListModel);
 
 }
