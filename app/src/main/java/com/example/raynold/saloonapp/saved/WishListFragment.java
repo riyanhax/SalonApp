@@ -56,11 +56,12 @@ public class WishListFragment extends LifecycleFragment {
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     SavedItemCollectionViewModel listItemCollectionViewModel;
+
     private List<WishListModel> listOfData;
     private LayoutInflater mLayoutInflater;
     private RecyclerView mRecyclerView;
     private SaveWishListAdapter mWishListAdapter;
-    private Toolbar mToolbar;
+
 
 
     public WishListFragment() {
@@ -115,8 +116,7 @@ public class WishListFragment extends LifecycleFragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.wish_list_recyclerview);
         mLayoutInflater = getActivity().getLayoutInflater();
 
-        mToolbar = (Toolbar) v.findViewById(R.id.wishlist_toolbar);
-        mToolbar.setTitle("WishList");
+
 
 
 
@@ -239,12 +239,14 @@ public class WishListFragment extends LifecycleFragment {
                 @Override
                 public void onClick(View v) {
                     Toasty.success(getContext(), "Clicked " + wishListModel.getName(), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(holder.itemView.getContext(), ProductDetailActivity.class);
+                    Intent intent = new Intent(holder.itemView.getContext(), WishListDetailActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("name", wishListModel.getName());
                     bundle.putString("price", wishListModel.getPrice());
                     bundle.putString("image", wishListModel.getImage());
                     bundle.putString("detail",wishListModel.getDetail());
+                    bundle.putInt("saved", wishListModel.getSaved());
+                    bundle.putString("location", wishListModel.getLocation());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

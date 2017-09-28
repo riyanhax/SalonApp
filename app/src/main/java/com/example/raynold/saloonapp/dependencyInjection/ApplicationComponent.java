@@ -6,6 +6,8 @@ import com.example.raynold.saloonapp.Activity.ProductDetailActivity;
 import com.example.raynold.saloonapp.Activity.ServicesActivity;
 import com.example.raynold.saloonapp.Activity.ShopActivity;
 import com.example.raynold.saloonapp.Adapter.ServicesAdapter;
+import com.example.raynold.saloonapp.ShopFragment;
+import com.example.raynold.saloonapp.detail.DetailFragment;
 import com.example.raynold.saloonapp.saved.WishListFragment;
 
 import javax.inject.Singleton;
@@ -24,6 +26,8 @@ public interface ApplicationComponent {
     void inject(ServicesActivity servicesActivity);
     void inject(ProductDetailActivity productDetailActivity);
     void inject(ShopActivity shopActivity);
+    void inject(DetailFragment detailFragment);
+    void inject(ShopFragment shopFragment);
 
     Application application();
 

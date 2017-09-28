@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include android:id="@+id/detail_wish"
+             layout="@layout/drawer_toolbar"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"/>
+
+    <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_fragment_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.raynold.saloonapp.detail.WshListDetailActivity">
+    tools:context="com.example.raynold.saloonapp.detail.WishListDetailActivity">
 
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>
+
+</LinearLayout>

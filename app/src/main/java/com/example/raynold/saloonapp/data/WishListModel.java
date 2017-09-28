@@ -17,14 +17,24 @@ public class WishListModel {
     private String price;
     private String location;
     private String detail;
+    private int saved;
 
-    public WishListModel(String itemId,String name, String image, String price, String location, String detail) {
+    public WishListModel(String itemId,String name, String image, String price, String location, String detail,int saved) {
         this.itemId = itemId;
         this.name = name;
         this.image = image;
         this.price = price;
         this.location = location;
         this.detail = detail;
+        this.saved = saved;
+    }
+
+    public int getSaved() {
+        return saved;
+    }
+
+    public void setSaved(int saved) {
+        this.saved = saved;
     }
 
     public String getItemId() {

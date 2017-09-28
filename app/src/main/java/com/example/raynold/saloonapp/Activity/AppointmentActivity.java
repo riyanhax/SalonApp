@@ -1,9 +1,8 @@
 package com.example.raynold.saloonapp.Activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.provider.CalendarContract;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,21 +10,16 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.raynold.saloonapp.Adapter.AppointmentAdapter;
-import com.example.raynold.saloonapp.Adapter.DayAdapter;
 import com.example.raynold.saloonapp.Model.Appointment;
-import com.example.raynold.saloonapp.Model.Day;
+import com.example.raynold.saloonapp.NotificationUtils;
 import com.example.raynold.saloonapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,10 +39,6 @@ import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import es.dmoral.toasty.Toasty;
 
-import static android.R.attr.background;
-import static android.R.attr.duration;
-import static android.R.attr.typeface;
-
 public class AppointmentActivity extends AppCompatActivity implements AppointmentAdapter.AppointmentClickListener {
 
     private Toolbar mAppointmentToolbar;
@@ -63,6 +53,7 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
     private ProgressDialog mProgressDialog;
     private String Username;
     private String userEmail;
+    private Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +176,7 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
                             startActivity(new Intent(AppointmentActivity.this, AccountActivity.class));
                             finish();
                             mProgressDialog.dismiss();
+                            NotificationUtils.remindUserBecauseCharging(mContext);
 
                             Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
 
