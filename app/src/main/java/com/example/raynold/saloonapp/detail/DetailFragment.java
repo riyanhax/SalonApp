@@ -1,6 +1,7 @@
 package com.example.raynold.saloonapp.detail;
 
 
+import android.animation.Animator;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
@@ -11,9 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +20,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.raynold.saloonapp.Activity.AddProductActivity;
-import com.example.raynold.saloonapp.Activity.ShopActivity;
 import com.example.raynold.saloonapp.Model.Lumo;
 import com.example.raynold.saloonapp.Model.Shop;
 import com.example.raynold.saloonapp.R;
@@ -36,14 +30,8 @@ import com.example.raynold.saloonapp.saved.WishListFragment;
 import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
 import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 import com.example.raynold.saloonapp.viewmodel.ShopItemViewModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -66,6 +54,7 @@ public class DetailFragment extends LifecycleFragment {
     private TextView mProductInfo;
     private ImageView mProductImage;
     private TextView mProductLocation;
+    private TextView mWishAdded;
     private ImageButton mWishlist;
     private int wish = 0;
     private String productName;
@@ -162,6 +151,7 @@ public class DetailFragment extends LifecycleFragment {
         mProductLocation = (TextView) v.findViewById(R.id.product_location);
         mProductInfo = (TextView) v.findViewById(R.id.product_info);
         mWishlist = (ImageButton) v.findViewById(R.id.wishlist_detail_btn);
+        mWishAdded = (TextView) v.findViewById(R.id.tv_added_wishlist);
 
 
         productName = getArguments().getString("name");
@@ -186,10 +176,35 @@ public class DetailFragment extends LifecycleFragment {
             @Override
             public void onClick(View v) {
 
-                //mWishlist.setImageResource(R.drawable.like);
                 if (wish == 0) {
                     WishListModel wishListModel = new WishListModel(productName,productName,productImage,productPrice,location,details,1);
                     listItemCollectionViewModel.addNewItemToDatabase(wishListModel);
+                    mWishAdded.setVisibility(View.VISIBLE);
+                    mWishAdded.animate().alpha(1f).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+
+                            mWishlist.setImageResource(R.drawable.like);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });
+                    //mWishAdded.setVisibility(View.GONE);
+                } else {
+
                 }
 
             }

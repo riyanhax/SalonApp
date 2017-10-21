@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -14,13 +14,12 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
-
     <application
         android:name=".Model.Lumo"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/hair"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/hair"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
@@ -49,7 +48,8 @@
         </activity>
         <activity android:name=".Activity.ServicesActivity">
         </activity>
-        <activity android:name=".saved.WishList"
+        <activity
+            android:name=".saved.WishList"
             android:parentActivityName=".Activity.MainActivity">
             <meta-data
                 android:name="ParentActivityName"
@@ -63,10 +63,7 @@
         </activity>
         <activity android:name=".Activity.LogInActivity">
         </activity>
-        <activity
-            android:name=".Activity.ProductDetailActivity"
-            >
-
+        <activity android:name=".Activity.ProductDetailActivity">
         </activity>
         <activity
             android:name=".Activity.AddProductActivity"
@@ -80,7 +77,10 @@
             android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name=".detail.WishListDetailActivity">
         </activity>
-
+        <activity android:name=".Activity.StyleDetailActivity">
+        </activity>
+        <activity android:name=".Activity.AddStyleActivity">
+        </activity>
     </application>
 
 </manifest>

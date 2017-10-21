@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:orientation="vertical"
 
     >
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/natural_graduated_bob"
-        android:alpha="0.7">
+        android:alpha="0.7"
+        android:background="@drawable/natural_graduated_bob">
 
     </View>
 
@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-
         android:padding="16dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -44,11 +43,11 @@
         android:id="@+id/header_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        tools:text="machiwokekoro@gmail.com"
-        android:textColor="@android:color/black"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:text="machiwokekoro@gmail.com"/>
 
     </LinearLayout>
 
@@ -56,35 +55,35 @@
         android:id="@+id/logged_out_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_centerVertical="true"
-        android:visibility="invisible"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lumo Naturals"
-            android:textSize="30sp"
             android:textColor="@color/colorPrimary"
+            android:textSize="30sp"
             android:textStyle="bold"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="All things natural"
-            android:textSize="20sp"
             android:textColor="@android:color/black"
+            android:textSize="20sp"
             />
 
         <Button
             android:id="@+id/goto_login_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_corners"
-            android:text="Login"
-            android:padding="16dp"
             android:layout_marginTop="16dp"
+            android:background="@drawable/btn_corners"
+            android:padding="16dp"
+            android:text="Login"
             android:textColor="@android:color/white"/>
 
     </LinearLayout>

@@ -116,10 +116,6 @@ public class WishListFragment extends LifecycleFragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.wish_list_recyclerview);
         mLayoutInflater = getActivity().getLayoutInflater();
 
-
-
-
-
         return v;
     }
 

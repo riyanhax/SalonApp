@@ -58,10 +58,10 @@ public class SignInActivity extends AppCompatActivity {
                     String password = mPassword.getText().toString();
 
                     if (email.contains("@")) {
+                        mProgressDialog.show();
                         mProgressDialog.setTitle("Login In");
                         mProgressDialog.setMessage("Please wait while we log you in");
                         mProgressDialog.setCanceledOnTouchOutside(false);
-                        mProgressDialog.show();
                         loginUser(email, password);
                     } else {
                         Toasty.error(SignInActivity.this, "Invalid Email", Toast.LENGTH_LONG).show();

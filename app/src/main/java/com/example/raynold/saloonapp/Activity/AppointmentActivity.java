@@ -41,6 +41,7 @@ import es.dmoral.toasty.Toasty;
 
 public class AppointmentActivity extends AppCompatActivity implements AppointmentAdapter.AppointmentClickListener {
 
+    private final String adminRef = "Admin_Appointment";
     private Toolbar mAppointmentToolbar;
     private RecyclerView mRecyclerView;
     private List<Appointment> mAppointmentList;
@@ -54,6 +55,7 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
     private String Username;
     private String userEmail;
     private Context mContext = this;
+    private DatabaseReference mAdminRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,14 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
         mProgressDialog = new ProgressDialog(this);
         mAppointmentRef = FirebaseDatabase.getInstance().getReference().child("Appointments");
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mAdminRef = FirebaseDatabase.getInstance().getReference().child(adminRef);
         mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() == null) {
+            Intent loginIntent = new Intent(AppointmentActivity.this, LogInActivity.class);
+            startActivity(loginIntent);
+            finish();
+        }
 
         mItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mRecyclerView.setHasFixedSize(true);
@@ -154,18 +163,20 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
     public void onClickeListerner(final Appointment appointment) {
         mProgressDialog.show();
         final String userUid = mAuth.getCurrentUser().getUid();
+
         mUserRef.child(userUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Username = dataSnapshot.child("name").getValue().toString();
                 userEmail = dataSnapshot.child("email").getValue().toString();
 
-                HashMap<String, String> hashMap = new HashMap<>();
+                final HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("startTime", appointment.getStartTime());
                 hashMap.put("endTime", appointment.getEndTime());
                 hashMap.put("date", currentDate);
                 hashMap.put("name", Username);
                 hashMap.put("email", userEmail);
+                hashMap.put("user_uid", userUid);
 
                 mAppointmentRef.child(userUid).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -173,12 +184,21 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
 
                         if (task.isSuccessful()) {
 
-                            startActivity(new Intent(AppointmentActivity.this, AccountActivity.class));
-                            finish();
-                            mProgressDialog.dismiss();
-                            NotificationUtils.remindUserBecauseCharging(mContext);
+                            mAdminRef.push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        startActivity(new Intent(AppointmentActivity.this, AccountActivity.class));
+                                        finish();
+                                        mProgressDialog.dismiss();
 
-                            Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
+                                        NotificationUtils.remindUserBecauseCharging(mContext);
+
+                                        Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
+
+                                    }
+                                }
+                            });
 
                         }
 

@@ -16,6 +16,7 @@
         android:layout_marginRight="8dp"
         android:background="@android:color/transparent"
         android:src="@drawable/heart_button"
+        android:visibility="gone"
         />
 
     <ImageView

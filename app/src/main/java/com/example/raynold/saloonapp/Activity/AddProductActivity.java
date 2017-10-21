@@ -13,14 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.raynold.saloonapp.Model.Shop;
 import com.example.raynold.saloonapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -60,10 +57,10 @@ public class AddProductActivity extends AppCompatActivity {
         mProductRef = FirebaseDatabase.getInstance().getReference().child("Shop");
         mImageStorage = FirebaseStorage.getInstance();
 
-        mProductName = (TextInputLayout) findViewById(R.id.add_product_name);
+        mProductName = (TextInputLayout) findViewById(R.id.et_add_style_name);
         mProductPrice = (TextInputLayout) findViewById(R.id.add_product_price);
-        mProductImage = (ImageButton) findViewById(R.id.add_product_image);
-        mProductInfo = (TextInputLayout) findViewById(R.id.add_product_info);
+        mProductImage = (ImageButton) findViewById(R.id.add_hair_image);
+        mProductInfo = (TextInputLayout) findViewById(R.id.et_add_style_info);
         mProductLocation = (TextInputLayout) findViewById(R.id.add_product_location);
         mAddProduct = (Button) findViewById(R.id.add_new_product);
         mImageDialog = new ProgressDialog(this);
@@ -151,8 +148,8 @@ public class AddProductActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-
-
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -182,7 +179,6 @@ public class AddProductActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         mProgressDialog.dismiss();
                         startActivity(new Intent(AddProductActivity.this, ShopActivity.class));
-                        Toasty.info(AddProductActivity.this, ""+downloadedUri, Toast.LENGTH_LONG).show();
                         Toasty.success(AddProductActivity.this, "product added succesfully", Toast.LENGTH_LONG).show();
                     }
                 }

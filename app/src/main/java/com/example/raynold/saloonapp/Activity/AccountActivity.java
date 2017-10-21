@@ -14,8 +14,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.raynold.saloonapp.Adapter.AdminAppointmentAdapter;
 import com.example.raynold.saloonapp.Model.AccountAppointment;
+import com.example.raynold.saloonapp.Model.AdminAppointment;
 import com.example.raynold.saloonapp.Model.Appointment;
 import com.example.raynold.saloonapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -29,10 +32,16 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
 public class AccountActivity extends AppCompatActivity {
 
+    private final String ADMIN_REF = "Admin_Appointment";
+    FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder> firebaseRecyclerAdapter;
     private Toolbar mAccountToolbar;
     private Button mLogOut;
     private DatabaseReference mUserRef;
@@ -43,8 +52,10 @@ public class AccountActivity extends AppCompatActivity {
     private RecyclerView mAppoinmtRecycler;
     private DividerItemDecoration mItemDecoration;
     private String appointmentKey;
-    FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder> firebaseRecyclerAdapter;
-
+    private DatabaseReference mAdminRef;
+    private AdminAppointmentAdapter mAdminAppointmentAdapter;
+    private RecyclerView mAdminRecycler;
+    private List<AdminAppointment> mAdminAppointments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +66,8 @@ public class AccountActivity extends AppCompatActivity {
         mLogOut = (Button) findViewById(R.id.log_out_btn);
         mAccountImage = (CircleImageView) findViewById(R.id.account_image);
         mAccountName = (TextView) findViewById(R.id.account_username);
+
+        //all users appoinment recyclerview setup
         mAppoinmtRecycler = (RecyclerView) findViewById(R.id.account_appoint_recycler);
         mAppoinmtRecycler.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -64,10 +77,24 @@ public class AccountActivity extends AppCompatActivity {
         mItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mAppoinmtRecycler.addItemDecoration(mItemDecoration);
 
+        //admin appointment recyclerview setup
+        mAdminRecycler = (RecyclerView) findViewById(R.id.admin_appoint_recycler);
+        mAdminRecycler.setHasFixedSize(true);
+        LinearLayoutManager adminLayout = new LinearLayoutManager(this);
+        adminLayout.setReverseLayout(true);
+        adminLayout.setStackFromEnd(true);
+        mAdminRecycler.setLayoutManager(adminLayout);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        mAdminRecycler.addItemDecoration(dividerItemDecoration);
+        mAdminAppointmentAdapter = new AdminAppointmentAdapter(mAdminAppointments);
+        mAdminRecycler.setAdapter(mAdminAppointmentAdapter);
+
+
         mAuth = FirebaseAuth.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mAccountRef = FirebaseDatabase.getInstance().getReference().child("Appointments")
                 .child(mAuth.getCurrentUser().getUid());
+        mAdminRef = FirebaseDatabase.getInstance().getReference().child(ADMIN_REF);
 
         mUserRef.keepSynced(true);
 
@@ -107,6 +134,32 @@ public class AccountActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mAppoinmtRecycler);
 
+        mAdminRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String appointmentKey = snapshot.getKey();
+
+                    //Toasty.info(AccountActivity.this, "key " + appointmentKey, Toast.LENGTH_LONG).show();
+                    mAdminRef.child(appointmentKey).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            mAdminAppointments.add(dataSnapshot.getValue(AdminAppointment.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -141,6 +194,16 @@ public class AccountActivity extends AppCompatActivity {
         mUserRef.child(userUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild("admin")) {
+
+                    mAdminRecycler.setVisibility(View.VISIBLE);
+                    mAppoinmtRecycler.setVisibility(View.INVISIBLE);
+                } else {
+                    mAdminRecycler.setVisibility(View.INVISIBLE);
+                    mAppoinmtRecycler.setVisibility(View.VISIBLE);
+
+                }
 
                 final String image = dataSnapshot.child("thumb_image").getValue().toString();
                 String username = dataSnapshot.child("name").getValue().toString();

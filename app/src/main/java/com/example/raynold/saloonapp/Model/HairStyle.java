@@ -6,48 +6,40 @@ package com.example.raynold.saloonapp.Model;
 
 public class HairStyle {
 
-    private String mTitle;
-    private String mDescription;
-    private String mPrice;
-    private int mPicUrl;
+    private String title;
+    private String description;
+        private String picUrl;
 
-    public HairStyle(String title, String description, String price, int picUrl) {
-        mTitle = title;
-        mDescription = description;
-        mPrice = price;
-        mPicUrl = picUrl;
+    public HairStyle(){}
+
+    public HairStyle(String title, String description, String picUrl) {
+        this.title = title;
+        this.description = description;
+        this.picUrl = picUrl;
     }
 
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public String getDescription() {
-        return mDescription;
+        return description;
     }
 
     public void setDescription(String description) {
-        mDescription = description;
+        this.description = description;
     }
 
-    public String getPrice() {
-        return mPrice;
+    public String getPicUrl() {
+        return this.picUrl;
     }
 
-    public void setPrice(String price) {
-        mPrice = price;
-    }
-
-    public int getPicUrl() {
-        return mPicUrl;
-    }
-
-    public void setPicUrl(int picUrl) {
-        mPicUrl = picUrl;
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
     }
 }

@@ -5,7 +5,6 @@ import android.app.Application;
 import com.example.raynold.saloonapp.Activity.ProductDetailActivity;
 import com.example.raynold.saloonapp.Activity.ServicesActivity;
 import com.example.raynold.saloonapp.Activity.ShopActivity;
-import com.example.raynold.saloonapp.Adapter.ServicesAdapter;
 import com.example.raynold.saloonapp.ShopFragment;
 import com.example.raynold.saloonapp.detail.DetailFragment;
 import com.example.raynold.saloonapp.saved.WishListFragment;

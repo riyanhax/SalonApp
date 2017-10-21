@@ -62,6 +62,8 @@ public class ShopFragment extends LifecycleFragment {
     ViewModelProvider.Factory viewModelFactory;
     NewShopItemViewModel listItemCollectionViewModel;
     ShopItemViewModel mShopItemViewModel;
+    FirebaseRecyclerAdapter<Shop, ShopViewHolder> firebaseRecyclerAdapter;
+    String userId;
     private List<Shop> mShopList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.ItemDecoration mItemDecoration;
@@ -107,6 +109,15 @@ public class ShopFragment extends LifecycleFragment {
             e.printStackTrace();
         }
 
+        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ShopFragment shopFragment = new ShopFragment();
+        shopFragment.setRetainInstance(true);
     }
 
     @Override
@@ -123,7 +134,13 @@ public class ShopFragment extends LifecycleFragment {
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mUserRef.keepSynced(true);
         mAuth = FirebaseAuth.getInstance();
-        String userId = mAuth.getCurrentUser().getUid();
+
+        try {
+            userId = mAuth.getCurrentUser().getUid();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         mAddProduct = (FloatingActionButton) v.findViewById(R.id.fb_add);
 
         mRecyclerView.setHasFixedSize(true);
@@ -142,20 +159,35 @@ public class ShopFragment extends LifecycleFragment {
             }
         });
 
-        mUserRef.child(userId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mDataSnapshot = dataSnapshot;
+        try{
+            mUserRef.child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mDataSnapshot = dataSnapshot;
 
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (mDataSnapshot.hasChild("admin")) {
+                mAddProduct.setVisibility(View.VISIBLE);
+            } else {
+                mAddProduct.setVisibility(View.INVISIBLE);
             }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-
-        FirebaseRecyclerAdapter<Shop, ShopViewHolder> firebaseRecyclerAdapter =
+        firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Shop, ShopViewHolder>(Shop.class,R.layout.shop_list_item,ShopViewHolder.class,mShopRef) {
                     @Override
                     protected void populateViewHolder(final ShopViewHolder viewHolder, final Shop model, int position) {
@@ -168,17 +200,18 @@ public class ShopFragment extends LifecycleFragment {
                         viewHolder.setStore(model.getLocation());
                         viewHolder.setImage(model.getImage());
 
-                        if (mDataSnapshot.hasChild("admin")) {
-                            mAddProduct.setVisibility(View.VISIBLE);
-                        } else {
-                            mAddProduct.setVisibility(View.INVISIBLE);
-                        }
-
                         try {
+                            if (mDataSnapshot.hasChild("admin")) {
+                                mAddProduct.setVisibility(View.VISIBLE);
+                            } else {
+                                mAddProduct.setVisibility(View.INVISIBLE);
+                            }
+
                             mShopItemViewModel.getListItemById(productName).observe(mLifecycleOwner, new Observer<WishListModel>() {
                                 @Override
                                 public void onChanged(@Nullable WishListModel listItem) {
                                     try {
+
                                         wish = listItem.getSaved();
                                     } catch (NullPointerException e) {
                                         e.printStackTrace();
@@ -240,6 +273,12 @@ public class ShopFragment extends LifecycleFragment {
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
 
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
     public static class ShopViewHolder extends RecyclerView.ViewHolder {

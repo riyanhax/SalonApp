@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Adapter.HairStyleAdapter;
 import com.example.raynold.saloonapp.Model.HairStyle;
 import com.example.raynold.saloonapp.Model.Lumo;
 import com.example.raynold.saloonapp.R;
