@@ -1,9 +1,8 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,9 +17,13 @@ import android.widget.Toast;
 
 import com.example.raynold.saloonapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import es.dmoral.toasty.Toasty;
 
@@ -32,6 +35,7 @@ public class SignInActivity extends AppCompatActivity {
     private EditText mPassword;
     private Button mLoginBtn;
     private ProgressDialog mProgressDialog;
+    private DatabaseReference mUserRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class SignInActivity extends AppCompatActivity {
         mUsername = (AutoCompleteTextView) findViewById(R.id.email);
         mPassword = (EditText) findViewById(R.id.password);
         mLoginBtn = (Button) findViewById(R.id.sign_in_button);
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         mProgressDialog = new ProgressDialog(this);
 
@@ -82,13 +87,22 @@ public class SignInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            mProgressDialog.dismiss();
-                            Intent mainIntent = new Intent(SignInActivity.this, MainActivity.class);
-                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(mainIntent);
-                            finish();
+
+                            String userId = mAuth.getCurrentUser().getUid();
+                            String device_token = FirebaseInstanceId.getInstance().getToken();
+                            mUserRef.child(userId).child("device_token").setValue(device_token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    mProgressDialog.dismiss();
+                                    Intent mainIntent = new Intent(SignInActivity.this, MainActivity.class);
+                                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(mainIntent);
+                                    finish();
+                                }
+                            });
+
                         }
-                        Log.d("LoginActivity", "signInWithEmail:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the

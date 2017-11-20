@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -25,18 +24,14 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Model.HairStyle;
-import com.example.raynold.saloonapp.Model.Shop;
+import com.example.raynold.saloonapp.model.HairStyle;
 import com.example.raynold.saloonapp.R;
-import com.example.raynold.saloonapp.data.WishListModel;
-import com.example.raynold.saloonapp.detail.WishListDetailActivity;
 import com.example.raynold.saloonapp.saved.WishList;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +46,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -59,6 +53,7 @@ import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    static ProgressBar mProgressBar;
     private RecyclerView mHairRecyclerview;
     private LinearLayoutManager mLinearLayoutManager;
     private List<HairStyle> mHairStyleList;
@@ -76,11 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView mHeaderUsername;
     private TextView mHeaderEmail;
     private FloatingActionButton mAddNewHairStyle;
-
     private DatabaseReference mHairStyleRef;
     private DataSnapshot mDataSnapshot;
     private String userId;
-    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mHeaderEmail = (TextView) header.findViewById(R.id.header_email);
         mHeaderUsername = (TextView) header.findViewById(R.id.header_username);
 
-
-                mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
 
         mHairRecyclerview.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(5), true));
@@ -153,6 +145,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+        if (mAuth.getCurrentUser() == null) {
+            mAddNewHairStyle.setVisibility(View.INVISIBLE);
+        }
 
         try{
             mUserRef.child(userId).addValueEventListener(new ValueEventListener() {
@@ -198,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -209,18 +206,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         viewHolder.setImage(model.getPicUrl());
 
-                        try {
-                            if (mDataSnapshot.hasChild("admin")) {
-                                mAddNewHairStyle.setVisibility(View.VISIBLE);
-                            } else {
-                                mAddNewHairStyle.setVisibility(View.INVISIBLE);
-                            }
-
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }
-
                         mProgressBar.setVisibility(View.INVISIBLE);
+
                         mHairRecyclerview.setVisibility(View.VISIBLE);
 
 
@@ -228,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onClick(View v) {
 
-                                Toast.makeText(getApplicationContext(), "You clicked ", Toast.LENGTH_SHORT).show();
                                 Bundle bundle = new Bundle();
                                 Intent styleIntent = new Intent(MainActivity.this, StyleDetailActivity.class);
                                 bundle.putString("image", model.getPicUrl());
@@ -241,9 +227,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         });
 
                     }
+
                 };
         mHairRecyclerview.setAdapter(firebaseRecyclerAdapter);
-
 
 
         // Get a reference to the ConnectivityManager to check state of network connectivity
@@ -281,6 +267,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     mHeaderUsername.setText(dataSnapshot.child("name").getValue().toString());
                     mHeaderEmail.setText(dataSnapshot.child("email").getValue().toString());
+
+                    try {
+                        if (dataSnapshot.hasChild("admin")) {
+                            mAddNewHairStyle.setVisibility(View.VISIBLE);
+                        } else {
+                            mAddNewHairStyle.setVisibility(View.INVISIBLE);
+                        }
+
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
 
                     final String defaultImage = dataSnapshot.child("thumb_image").getValue().toString();
                     if (defaultImage.equals("default")) {
@@ -371,8 +368,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
-
     /**
      * Converting dp to pixel
      */
@@ -398,17 +393,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         public void setImage(final String imageUrl) {
 
-            Picasso.with(itemView.getContext()).load(imageUrl).placeholder(R.drawable.no_image_placeholder).into(mImageView, new Callback() {
+            Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    Picasso.with(itemView.getContext()).load(imageUrl).placeholder(R.drawable.no_image_placeholder).into(mImageView);
+                    Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView);
                 }
 
                 @Override
                 public void onError() {
                     Picasso.with(itemView.getContext()).load(imageUrl).placeholder(R.drawable.no_image_placeholder).into(mImageView);
+
                 }
             });
+
         }
 
     }

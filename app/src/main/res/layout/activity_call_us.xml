@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.raynold.saloonapp.Activity.MainActivity"
-    android:id="@+id/drawer_layout">
+    tools:context="com.example.raynold.saloonapp.activity.MainActivity">
 
 
-        <include layout="@layout/drawer_toolbar" android:id="@+id/call_us_toolbar"
+        <include android:id="@+id/call_us_toolbar" layout="@layout/drawer_toolbar"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"/>
 

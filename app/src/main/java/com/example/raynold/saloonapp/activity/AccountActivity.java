@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,18 +8,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Adapter.AdminAppointmentAdapter;
-import com.example.raynold.saloonapp.Model.AccountAppointment;
-import com.example.raynold.saloonapp.Model.AdminAppointment;
-import com.example.raynold.saloonapp.Model.Appointment;
+import com.example.raynold.saloonapp.adapter.AdminAppointmentAdapter;
+import com.example.raynold.saloonapp.model.AccountAppointment;
+import com.example.raynold.saloonapp.model.AdminAppointment;
 import com.example.raynold.saloonapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import es.dmoral.toasty.Toasty;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -86,8 +81,6 @@ public class AccountActivity extends AppCompatActivity {
         mAdminRecycler.setLayoutManager(adminLayout);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mAdminRecycler.addItemDecoration(dividerItemDecoration);
-        mAdminAppointmentAdapter = new AdminAppointmentAdapter(mAdminAppointments);
-        mAdminRecycler.setAdapter(mAdminAppointmentAdapter);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -133,6 +126,7 @@ public class AccountActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mAppoinmtRecycler);
+        itemTouchHelper.attachToRecyclerView(mAdminRecycler);
 
         mAdminRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -140,11 +134,12 @@ public class AccountActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String appointmentKey = snapshot.getKey();
 
-                    //Toasty.info(AccountActivity.this, "key " + appointmentKey, Toast.LENGTH_LONG).show();
                     mAdminRef.child(appointmentKey).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             mAdminAppointments.add(dataSnapshot.getValue(AdminAppointment.class));
+                            mAdminAppointmentAdapter = new AdminAppointmentAdapter(mAdminAppointments);
+                            mAdminRecycler.setAdapter(mAdminAppointmentAdapter);
                         }
 
                         @Override
@@ -166,6 +161,7 @@ public class AccountActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        getUserDetails();
          firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder>(
                 AccountAppointment.class,

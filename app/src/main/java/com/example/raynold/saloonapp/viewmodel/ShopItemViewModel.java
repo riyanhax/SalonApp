@@ -3,7 +3,6 @@ package com.example.raynold.saloonapp.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.example.raynold.saloonapp.Model.Shop;
 import com.example.raynold.saloonapp.data.SavedItemRepository;
 import com.example.raynold.saloonapp.data.WishListModel;
 

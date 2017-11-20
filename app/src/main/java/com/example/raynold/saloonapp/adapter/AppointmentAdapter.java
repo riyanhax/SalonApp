@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Adapter;
+package com.example.raynold.saloonapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.raynold.saloonapp.Model.Appointment;
+import com.example.raynold.saloonapp.model.Appointment;
 import com.example.raynold.saloonapp.R;
 
 import java.util.List;
@@ -25,11 +25,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public AppointmentAdapter(List<Appointment> appointmentList, AppointmentClickListener appointmentClickListener) {
         mAppointmentList = appointmentList;
         mAppointmentClickListener = appointmentClickListener;
-    }
-
-    public interface AppointmentClickListener {
-
-        void onClickeListerner(Appointment appointment);
     }
 
     @Override
@@ -58,6 +53,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         return mAppointmentList.size();
     }
 
+    public interface AppointmentClickListener {
+
+        void onClickeListerner(Appointment appointment);
+    }
 
     public class AppointmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

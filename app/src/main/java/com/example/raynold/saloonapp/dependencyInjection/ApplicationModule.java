@@ -2,7 +2,7 @@ package com.example.raynold.saloonapp.dependencyInjection;
 
 import android.app.Application;
 
-import com.example.raynold.saloonapp.Model.Lumo;
+import com.example.raynold.saloonapp.model.Lumo;
 import dagger.Module;
 import dagger.Provides;
 

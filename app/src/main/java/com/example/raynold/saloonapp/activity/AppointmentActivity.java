@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,9 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Adapter.AppointmentAdapter;
-import com.example.raynold.saloonapp.Model.Appointment;
-import com.example.raynold.saloonapp.NotificationUtils;
+import com.example.raynold.saloonapp.adapter.AppointmentAdapter;
+import com.example.raynold.saloonapp.model.Appointment;
 import com.example.raynold.saloonapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,6 +55,8 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
     private String userEmail;
     private Context mContext = this;
     private DatabaseReference mAdminRef;
+    private DatabaseReference mNotification;
+    private String adminUid = "cgr2P4gMnjaX5OtcUGagEiTEI482";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
         mProgressDialog = new ProgressDialog(this);
         mAppointmentRef = FirebaseDatabase.getInstance().getReference().child("Appointments");
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mNotification = FirebaseDatabase.getInstance().getReference().child("Notifications");
         mAdminRef = FirebaseDatabase.getInstance().getReference().child(adminRef);
         mAuth = FirebaseAuth.getInstance();
 
@@ -169,6 +171,7 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Username = dataSnapshot.child("name").getValue().toString();
                 userEmail = dataSnapshot.child("email").getValue().toString();
+                String phoneNum = dataSnapshot.child("phone_number").getValue().toString();
 
                 final HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("startTime", appointment.getStartTime());
@@ -177,6 +180,14 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
                 hashMap.put("name", Username);
                 hashMap.put("email", userEmail);
                 hashMap.put("user_uid", userUid);
+                hashMap.put("phoneNumber", phoneNum);
+
+                final HashMap<String, String> notificationMap = new HashMap<>();
+                notificationMap.put("name", Username);
+                notificationMap.put("email", userEmail);
+                notificationMap.put("user_uid", userUid);
+                notificationMap.put("admin_uid", adminUid);
+
 
                 mAppointmentRef.child(userUid).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -192,9 +203,21 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
                                         finish();
                                         mProgressDialog.dismiss();
 
-                                        NotificationUtils.remindUserBecauseCharging(mContext);
+                                        //NotificationUtils.remindUserBecauseCharging(mContext);
 
-                                        Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
+
+                                        mNotification.child(userUid).push().setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                                if (task.isSuccessful()){
+
+                                                    Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
+
+                                                }
+                                            }
+                                        });
+
 
                                     }
                                 }

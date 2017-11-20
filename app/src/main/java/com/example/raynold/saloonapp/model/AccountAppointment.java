@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Model;
+package com.example.raynold.saloonapp.model;
 
 /**
  * Created by RAYNOLD on 9/11/2017.

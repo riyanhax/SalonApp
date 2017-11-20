@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -27,6 +27,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import es.dmoral.toasty.Toasty;
 
@@ -123,7 +124,10 @@ public class AddProductActivity extends AppCompatActivity {
 
                     Uri resultUri = result.getUri();
 
-                    StorageReference reference = mImageStorage.getReference().child("product_photos").child(productName+".jpg");
+                    Random random = new Random();
+                    int randomNum = random.nextInt(1 + 2000000) + 28;
+
+                    StorageReference reference = mImageStorage.getReference().child("product_photos").child(randomNum+".jpg");
 
                     reference.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @SuppressWarnings("VisibleForTests")

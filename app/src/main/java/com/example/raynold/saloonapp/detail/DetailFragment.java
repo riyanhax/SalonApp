@@ -3,16 +3,12 @@ package com.example.raynold.saloonapp.detail;
 
 import android.animation.Animator;
 import android.arch.lifecycle.LifecycleFragment;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.example.raynold.saloonapp.Model.Lumo;
-import com.example.raynold.saloonapp.Model.Shop;
+import com.example.raynold.saloonapp.model.Lumo;
 import com.example.raynold.saloonapp.R;
-import com.example.raynold.saloonapp.data.SavedItemDatabase;
 import com.example.raynold.saloonapp.data.WishListModel;
-import com.example.raynold.saloonapp.saved.WishList;
-import com.example.raynold.saloonapp.saved.WishListFragment;
 import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
 import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 import com.example.raynold.saloonapp.viewmodel.ShopItemViewModel;
@@ -34,8 +26,6 @@ import com.example.raynold.saloonapp.viewmodel.ShopItemViewModel;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
-
-import es.dmoral.toasty.Toasty;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +38,6 @@ public class DetailFragment extends LifecycleFragment {
     ShopItemViewModel mShopItemViewModel;
     SavedItemCollectionViewModel mSavedItemCollectionViewModel;
 
-    private Toolbar mToolbar;
     private TextView mProductName;
     private TextView mProductPrice;
     private TextView mProductInfo;
@@ -58,6 +47,7 @@ public class DetailFragment extends LifecycleFragment {
     private ImageButton mWishlist;
     private int wish = 0;
     private String productName;
+    private ProgressBar mDetailProgress;
 
 
     public DetailFragment() {
@@ -143,8 +133,6 @@ public class DetailFragment extends LifecycleFragment {
 
         View v = inflater.inflate(R.layout.fragment_detail, container, false);
 
-
-        mToolbar = (Toolbar) v.findViewById(R.id.product_layout);
         mProductName = (TextView) v.findViewById(R.id.product_name);
         mProductPrice = (TextView) v.findViewById(R.id.product_price);
         mProductImage = (ImageView) v.findViewById(R.id.product_image);
@@ -152,6 +140,7 @@ public class DetailFragment extends LifecycleFragment {
         mProductInfo = (TextView) v.findViewById(R.id.product_info);
         mWishlist = (ImageButton) v.findViewById(R.id.wishlist_detail_btn);
         mWishAdded = (TextView) v.findViewById(R.id.tv_added_wishlist);
+        mDetailProgress = (ProgressBar) v.findViewById(R.id.shop_detail_progress);
 
 
         productName = getArguments().getString("name");
@@ -167,10 +156,16 @@ public class DetailFragment extends LifecycleFragment {
         mProductName.setText(productName);
         mProductPrice.setText(String.valueOf("N " +productPrice));
 
-        Picasso.with(getContext()).load(productImage).placeholder(R.drawable.no_image_placeholder).into(mProductImage);
         mProductLocation.setText(location);
         mProductInfo.setText(details);
         mProductPrice.setText("N " + productPrice);
+        try {
+            Picasso.with(getContext()).load(productImage).placeholder(R.drawable.no_image_placeholder).into(mProductImage);
+            mDetailProgress.setVisibility(View.INVISIBLE);
+        }catch (OutOfMemoryError e) {
+            e.printStackTrace();
+        }
+
 
         mWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +175,7 @@ public class DetailFragment extends LifecycleFragment {
                     WishListModel wishListModel = new WishListModel(productName,productName,productImage,productPrice,location,details,1);
                     listItemCollectionViewModel.addNewItemToDatabase(wishListModel);
                     mWishAdded.setVisibility(View.VISIBLE);
-                    mWishAdded.animate().alpha(1f).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                    mWishAdded.animate().alpha(1f).setDuration(100).setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
 
@@ -202,9 +197,12 @@ public class DetailFragment extends LifecycleFragment {
 
                         }
                     });
+                    wish = 1;
                     //mWishAdded.setVisibility(View.GONE);
-                } else {
+                } else if (wish == 1){
 
+                    mWishlist.setImageResource(R.drawable.heart_button);
+                    wish = 0;
                 }
 
             }

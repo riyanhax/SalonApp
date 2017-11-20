@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -103,8 +104,10 @@ public class SignUpActivity extends AppCompatActivity {
 
                     FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                     String userId = mFirebaseUser.getUid();
+                    String device_token = FirebaseInstanceId.getInstance().getToken();
 
                     HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put("device_token", device_token);
                     hashMap.put("name", username);
                     hashMap.put("email", email);
                     hashMap.put("image", "default");

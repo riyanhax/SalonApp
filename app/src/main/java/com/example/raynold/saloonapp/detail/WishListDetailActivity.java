@@ -2,14 +2,12 @@ package com.example.raynold.saloonapp.detail;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.raynold.saloonapp.R;
-import com.example.raynold.saloonapp.Util.BaseActivity;
-import com.example.raynold.saloonapp.saved.WishListFragment;
+import com.example.raynold.saloonapp.util.BaseActivity;
 
 public class WishListDetailActivity extends BaseActivity {
 

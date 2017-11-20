@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
@@ -12,19 +12,15 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Model.Lumo;
+import com.example.raynold.saloonapp.model.Lumo;
 import com.example.raynold.saloonapp.R;
 import com.example.raynold.saloonapp.data.WishListModel;
 import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
-import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 import com.example.raynold.saloonapp.viewmodel.ShopItemViewModel;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
-
-import es.dmoral.toasty.Toasty;
 
 public class ProductDetailActivity extends AppCompatActivity {
 

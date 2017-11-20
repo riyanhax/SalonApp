@@ -1,11 +1,7 @@
-package com.example.raynold.saloonapp.Adapter;
+package com.example.raynold.saloonapp.adapter;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.raynold.saloonapp.Model.Services;
+import com.example.raynold.saloonapp.model.Services;
 import com.example.raynold.saloonapp.R;
-import com.example.raynold.saloonapp.data.WishListModel;
-import com.example.raynold.saloonapp.saved.WishListFragment;
 import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
-import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by RAYNOLD on 8/24/2017.

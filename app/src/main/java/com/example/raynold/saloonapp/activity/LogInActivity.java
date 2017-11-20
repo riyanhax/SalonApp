@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.raynold.saloonapp.R;
-
-import static android.icu.lang.UCharacter.JoiningGroup.E;
 
 public class LogInActivity extends AppCompatActivity {
 

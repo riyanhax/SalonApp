@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Model;
+package com.example.raynold.saloonapp.model;
 
 /**
  * Created by RAYNOLD on 9/28/2017.
@@ -12,16 +12,26 @@ public class AdminAppointment {
     private String endTime;
     private String email;
     private String userUid;
+    private String phoneNumber;
 
     public AdminAppointment() {}
 
-    public AdminAppointment(String name, String date, String startTime, String endTime, String email, String userUid) {
+    public AdminAppointment(String name, String date, String startTime, String endTime, String email, String userUid, String phoneNumber) {
         this.name = name;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.email = email;
         this.userUid = userUid;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getName() {

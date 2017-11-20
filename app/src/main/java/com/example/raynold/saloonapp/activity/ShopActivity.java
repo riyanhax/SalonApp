@@ -1,39 +1,38 @@
-package com.example.raynold.saloonapp.saved;
+package com.example.raynold.saloonapp.activity;
 
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.raynold.saloonapp.R;
+import com.example.raynold.saloonapp.ShopFragment;
 import com.example.raynold.saloonapp.util.BaseActivity;
 
-public class WishList extends BaseActivity {
+public class ShopActivity extends BaseActivity{
 
-    private static final String LIST_FRAG = "LIST_FRAG";
+    private static final String SHOP_FRAG = "SHOP_FRAG";
     private Toolbar mToolbar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_job);
+        setContentView(R.layout.activity_shop);
 
-        mToolbar = (Toolbar) findViewById(R.id.saved_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.shop_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("WishList");
+        getSupportActionBar().setTitle("Shop");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        WishListFragment wishListFragment = (WishListFragment) fragmentManager.findFragmentByTag(LIST_FRAG);
+        ShopFragment shopFragment = (ShopFragment) fragmentManager.findFragmentByTag(SHOP_FRAG);
 
-        if (wishListFragment == null) {
-            wishListFragment = WishListFragment.newInstance();
+        if (shopFragment == null) {
+            shopFragment = ShopFragment.newInstance();
 
-            addFragmentToActivity(fragmentManager,wishListFragment,R.id.root_activity_list, LIST_FRAG);
+            addFragmentToActivity(fragmentManager,shopFragment,R.id.root_shop_activity, SHOP_FRAG);
         }
-
 
     }
 

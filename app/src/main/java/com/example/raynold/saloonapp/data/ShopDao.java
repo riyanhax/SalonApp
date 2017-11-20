@@ -7,8 +7,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.raynold.saloonapp.Model.Shop;
-
 import java.util.List;
 
 /**

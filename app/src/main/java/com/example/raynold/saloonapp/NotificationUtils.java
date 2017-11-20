@@ -12,7 +12,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.example.raynold.saloonapp.Activity.MainActivity;
+import com.example.raynold.saloonapp.activity.AccountActivity;
 
 /**
  * Created by RAYNOLD on 9/28/2017.
@@ -71,7 +71,14 @@ public class NotificationUtils {
 
         // COMPLETED (12) Trigger the notification by calling notify on the NotificationManager.
         // Pass in a unique ID of your choosing for the notification and notificationBuilder.build()
-        notificationManager.notify(APPOINTMENT_NOTIFICATION_ID, notificationBuilder.build());
+        try {
+            if (notificationManager != null) {
+                notificationManager.notify(APPOINTMENT_NOTIFICATION_ID, notificationBuilder.build());
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
     }
 
     // COMPLETED (1) Create a helper method called contentIntent with a single parameter for a Context. It
@@ -79,7 +86,7 @@ public class NotificationUtils {
     // the notification is pressed. This pending intent should open up the MainActivity.
     private static PendingIntent contentIntent(Context context) {
         // COMPLETED (2) Create an intent that opens up the MainActivity
-        Intent startActivityIntent = new Intent(context, MainActivity.class);
+        Intent startActivityIntent = new Intent(context, AccountActivity.class);
         // COMPLETED (3) Create a PendingIntent using getActivity that:
         // - Take the context passed in as a parameter
         // - Takes an unique integer ID for the pending intent (you can create a constant for

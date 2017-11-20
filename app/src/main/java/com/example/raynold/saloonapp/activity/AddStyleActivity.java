@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -25,9 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import es.dmoral.toasty.Toasty;
 
@@ -44,6 +45,7 @@ public class AddStyleActivity extends AppCompatActivity {
     private String downloadedUri;
     private ProgressDialog mImageDialog;
     private ProgressDialog mNewStyleDialog;
+    private ImageView mImagePreview;
 
     private DatabaseReference mHairRef;
     private FirebaseStorage mHairStorage;
@@ -61,8 +63,15 @@ public class AddStyleActivity extends AppCompatActivity {
         mHairButton = (Button) findViewById(R.id.bt_new_style);
         mHairImage = (ImageView) findViewById(R.id.add_hair_image);
         mNewHairToolbar = (Toolbar) findViewById(R.id.new_style_appbar);
+        mImagePreview = (ImageView) findViewById(R.id.im_hair_preview);
+
         setSupportActionBar(mNewHairToolbar);
-        getSupportActionBar().setTitle("Add New Hair");
+        try{
+            getSupportActionBar().setTitle("Add New Hair");
+        }catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -119,7 +128,10 @@ public class AddStyleActivity extends AppCompatActivity {
 
                 Uri resultUri = result.getUri();
 
-                StorageReference reference = mHairStorage.getReference().child("product_photos").child(hairName+".jpg");
+                Random random = new Random();
+                int randomNum = random.nextInt(1 + 100000) + 28;
+
+                StorageReference reference = mHairStorage.getReference().child("product_photos").child(randomNum+".jpg");
 
                 reference.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
@@ -129,6 +141,7 @@ public class AddStyleActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             downloadedUri = task.getResult().getDownloadUrl().toString();
+                            Picasso.with(getApplicationContext()).load(downloadedUri).into(mImagePreview);
 
                             mImageDialog.dismiss();
 

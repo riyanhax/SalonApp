@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Activity;
+package com.example.raynold.saloonapp.activity;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -11,10 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Model.Lumo;
+import com.example.raynold.saloonapp.model.Lumo;
 import com.example.raynold.saloonapp.R;
-import com.example.raynold.saloonapp.Model.Services;
-import com.example.raynold.saloonapp.Adapter.ServicesAdapter;
+import com.example.raynold.saloonapp.model.Services;
+import com.example.raynold.saloonapp.adapter.ServicesAdapter;
 import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
 
 import java.util.ArrayList;

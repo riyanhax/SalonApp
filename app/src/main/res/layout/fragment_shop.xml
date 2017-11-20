@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.raynold.saloonapp.Activity.ShopActivity">
+    tools:context="com.example.raynold.saloonapp.activity.ShopActivity">
 
     <ProgressBar
         android:id="@+id/shop_progressbar"
@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="232dp"
-        app:layout_constraintEnd_toEndOf="@+id/shop_recycler"
-        app:layout_constraintStart_toStartOf="@+id/shop_recycler"
-        app:layout_constraintTop_toTopOf="@+id/shop_recycler"/>
+        android:layout_marginTop="244dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/shop_recycler"

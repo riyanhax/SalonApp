@@ -1,15 +1,13 @@
-package com.example.raynold.saloonapp.Adapter;
+package com.example.raynold.saloonapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.raynold.saloonapp.Model.AdminAppointment;
-import com.example.raynold.saloonapp.Model.Appointment;
+import com.example.raynold.saloonapp.model.AdminAppointment;
 import com.example.raynold.saloonapp.R;
 
 import java.util.List;
@@ -46,6 +44,7 @@ public class AdminAppointmentAdapter extends RecyclerView.Adapter<AdminAppointme
         holder.mTime.setText(appointment.getStartTime() + " - " + appointment.getEndTime());
         holder.mName.setText(appointment.getName());
         holder.mdate.setText(appointment.getDate());
+        holder.mPhoneNNumber.setText(appointment.getPhoneNumber());
 
     }
 
@@ -64,6 +63,7 @@ public class AdminAppointmentAdapter extends RecyclerView.Adapter<AdminAppointme
         TextView mName;
         TextView mTime;
         TextView mdate;
+        TextView mPhoneNNumber;
 
 
         public AdminAppointmentViewHolder(View itemView) {
@@ -72,6 +72,7 @@ public class AdminAppointmentAdapter extends RecyclerView.Adapter<AdminAppointme
             mTime = (TextView) itemView.findViewById(R.id.tv_appointment_time);
             mName = (TextView) itemView.findViewById(R.id.tv_appointment_name);
             mdate = (TextView) itemView.findViewById(R.id.tv_appointment_date);
+            mPhoneNNumber = (TextView) itemView.findViewById(R.id.tv_appointment_phone);
 
 
         }

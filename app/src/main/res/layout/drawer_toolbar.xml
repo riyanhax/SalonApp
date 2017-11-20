@@ -4,10 +4,10 @@
                                    android:id="@+id/drawer_toolbar"
                                    android:layout_width="match_parent"
                                    android:layout_height="wrap_content"
-                                   android:background="@color/colorPrimary"
                                    android:alpha="0.8"
+                                   android:background="@color/colorPrimary"
                                    android:orientation="vertical"
-                                   tools:context="com.example.raynold.saloonapp.Activity.MainActivity"
-                                   android:theme="@style/ThemeOverlay.AppCompat.Dark">
+                                   android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                                   tools:context="com.example.raynold.saloonapp.activity.MainActivity">
 
 </android.support.v7.widget.Toolbar>

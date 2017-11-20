@@ -3,21 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.raynold.saloonapp.Activity.MainActivity"
-    android:id="@+id/drawer_layout">
+    tools:context="com.example.raynold.saloonapp.activity.MainActivity">
 
         <include
             android:id="@+id/location_toolbar"
             layout="@layout/drawer_toolbar"
             android:layout_width="0dp"
             android:layout_height="56dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="0dp"
-            app:layout_constraintHorizontal_bias="0.0"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:map="http://schemas.android.com/apk/res-auto"

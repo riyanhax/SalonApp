@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#c0c0c0"
-    tools:context="com.example.raynold.saloonapp.Activity.AccountActivity">
+    tools:context="com.example.raynold.saloonapp.activity.AccountActivity">
 
     <include
         android:id="@+id/account_appbar"

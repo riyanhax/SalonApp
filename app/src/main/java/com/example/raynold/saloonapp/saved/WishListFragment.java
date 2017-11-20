@@ -1,12 +1,10 @@
 package com.example.raynold.saloonapp.saved;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -27,11 +25,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Activity.ProductDetailActivity;
-import com.example.raynold.saloonapp.Model.Lumo;
+import com.example.raynold.saloonapp.model.Lumo;
 import com.example.raynold.saloonapp.R;
 import com.example.raynold.saloonapp.data.WishListModel;
 import com.example.raynold.saloonapp.detail.WishListDetailActivity;
@@ -230,7 +226,7 @@ public class WishListFragment extends LifecycleFragment {
 
             holder.wishlistName.setText(wishListModel.getName());
             holder.wishlistPrice.setText(wishListModel.getPrice());
-            Picasso.with(getContext()).load(R.drawable.no_image_placeholder).into(holder.wishlistImage);
+            Picasso.with(getContext()).load(wishListModel.getImage()).into(holder.wishlistImage);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

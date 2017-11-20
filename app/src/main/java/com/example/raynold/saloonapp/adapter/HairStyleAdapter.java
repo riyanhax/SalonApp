@@ -10,7 +10,10 @@
 //
 //import com.example.raynold.saloonapp.Model.HairStyle;
 //import com.example.raynold.saloonapp.R;
+//import com.squareup.picasso.Callback;
+//import com.squareup.picasso.Picasso;
 //
+//import java.util.Collections;
 //import java.util.List;
 //
 ///**
@@ -21,7 +24,7 @@
 //
 //    private ListItemClickListener mOnclickListener;
 //
-//    private List<HairStyle> mHairStyles;
+//    public List<HairStyle> mHairStyles = Collections.emptyList();
 //
 //    public HairStyleAdapter(List<HairStyle> hairStyles, ListItemClickListener itemClickListener) {
 //        this.mHairStyles = hairStyles;
@@ -55,10 +58,7 @@
 //    public void onBindViewHolder(HairStyleViewHolder holder, int position) {
 //
 //        HairStyle hairStyle = mHairStyles.get(position);
-//        //holder.mTitle.setText(hairStyle.getTitle());
-//        //holder.mDescription.setText(hairStyle.getDescription());
-//        //holder.mPrice.setText(hairStyle.getPrice());
-//        holder.mImageView.setImageResource(hairStyle.getPicUrl());
+//        holder.setImage(hairStyle.getPicUrl());
 //
 //    }
 //
@@ -66,6 +66,9 @@
 //    public int getItemCount() {
 //        return mHairStyles.size();
 //    }
+//
+//
+//
 //
 //
 //

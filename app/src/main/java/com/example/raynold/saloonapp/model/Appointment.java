@@ -1,6 +1,4 @@
-package com.example.raynold.saloonapp.Model;
-
-import java.util.Date;
+package com.example.raynold.saloonapp.model;
 
 /**
  * Created by RAYNOLD on 8/29/2017.

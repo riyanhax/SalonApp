@@ -16,7 +16,7 @@
  *
  */
 
-package com.example.raynold.saloonapp.Util;
+package com.example.raynold.saloonapp.util;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

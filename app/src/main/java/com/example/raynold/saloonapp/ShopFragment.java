@@ -6,7 +6,6 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -16,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +24,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.raynold.saloonapp.Activity.AddProductActivity;
-import com.example.raynold.saloonapp.Activity.ShopActivity;
-import com.example.raynold.saloonapp.Model.Lumo;
-import com.example.raynold.saloonapp.Model.Shop;
+import com.example.raynold.saloonapp.activity.AddProductActivity;
+import com.example.raynold.saloonapp.model.Lumo;
+import com.example.raynold.saloonapp.model.Shop;
 import com.example.raynold.saloonapp.data.WishListModel;
 import com.example.raynold.saloonapp.detail.WishListDetailActivity;
 import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
-import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 import com.example.raynold.saloonapp.viewmodel.ShopItemViewModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -159,33 +155,7 @@ public class ShopFragment extends LifecycleFragment {
             }
         });
 
-        try{
-            mUserRef.child(userId).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    mDataSnapshot = dataSnapshot;
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (mDataSnapshot.hasChild("admin")) {
-                mAddProduct.setVisibility(View.VISIBLE);
-            } else {
-                mAddProduct.setVisibility(View.INVISIBLE);
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
-
+        getUserData();
 
         firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Shop, ShopViewHolder>(Shop.class,R.layout.shop_list_item,ShopViewHolder.class,mShopRef) {
@@ -201,11 +171,6 @@ public class ShopFragment extends LifecycleFragment {
                         viewHolder.setImage(model.getImage());
 
                         try {
-                            if (mDataSnapshot.hasChild("admin")) {
-                                mAddProduct.setVisibility(View.VISIBLE);
-                            } else {
-                                mAddProduct.setVisibility(View.INVISIBLE);
-                            }
 
                             mShopItemViewModel.getListItemById(productName).observe(mLifecycleOwner, new Observer<WishListModel>() {
                                 @Override
@@ -275,6 +240,38 @@ public class ShopFragment extends LifecycleFragment {
         return v;
     }
 
+    public void getUserData() {
+
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            String userUid = mAuth.getCurrentUser().getUid();
+            mUserRef.child(userUid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    try {
+                        if (dataSnapshot.hasChild("admin")) {
+                            mAddProduct.setVisibility(View.VISIBLE);
+                        } else {
+                            mAddProduct.setVisibility(View.INVISIBLE);
+                        }
+
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            mAddProduct.setVisibility(View.INVISIBLE);
+        }
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -314,7 +311,7 @@ public class ShopFragment extends LifecycleFragment {
 
         }
         public void setImage(final String image) {
-            Picasso.with(itemView.getContext()).load(image).placeholder(R.drawable.no_image_placeholder).into(mShop_image, new Callback() {
+            Picasso.with(itemView.getContext()).load(image).placeholder(R.drawable.loading_image).into(mShop_image, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -323,7 +320,7 @@ public class ShopFragment extends LifecycleFragment {
                 @Override
                 public void onError() {
 
-                    Picasso.with(itemView.getContext()).load(R.drawable.no_image_placeholder).into(mShop_image);
+                    Picasso.with(itemView.getContext()).load(R.drawable.loading_image).into(mShop_image);
                 }
             });
         }

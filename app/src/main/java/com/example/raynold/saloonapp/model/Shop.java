@@ -1,4 +1,4 @@
-package com.example.raynold.saloonapp.Model;
+package com.example.raynold.saloonapp.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
