@@ -23,6 +23,7 @@ import com.example.raynold.saloonapp.viewmodel.NewShopItemViewModel;
 import com.example.raynold.saloonapp.viewmodel.SavedItemCollectionViewModel;
 import com.example.raynold.saloonapp.viewmodel.ShopItemViewModel;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -158,9 +159,19 @@ public class DetailFragment extends LifecycleFragment {
 
         mProductLocation.setText(location);
         mProductInfo.setText(details);
-        mProductPrice.setText("N " + productPrice);
+        mProductPrice.setText("₦" + productPrice);
         try {
-            Picasso.with(getContext()).load(productImage).placeholder(R.drawable.no_image_placeholder).into(mProductImage);
+            Picasso.with(getContext()).load(productImage).into(mProductImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Picasso.with(getContext()).load(productImage).into(mProductImage);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
             mDetailProgress.setVisibility(View.INVISIBLE);
         }catch (OutOfMemoryError e) {
             e.printStackTrace();

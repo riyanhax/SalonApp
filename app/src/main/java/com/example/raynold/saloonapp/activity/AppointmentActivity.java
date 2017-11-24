@@ -41,6 +41,7 @@ import es.dmoral.toasty.Toasty;
 public class AppointmentActivity extends AppCompatActivity implements AppointmentAdapter.AppointmentClickListener {
 
     private final String adminRef = "Admin_Appointment";
+    String appointmentKey;
     private Toolbar mAppointmentToolbar;
     private RecyclerView mRecyclerView;
     private List<Appointment> mAppointmentList;
@@ -195,33 +196,51 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
 
                         if (task.isSuccessful()) {
 
-                            mAdminRef.push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            mAppointmentRef.child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        startActivity(new Intent(AppointmentActivity.this, AccountActivity.class));
-                                        finish();
-                                        mProgressDialog.dismiss();
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                        //NotificationUtils.remindUserBecauseCharging(mContext);
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        appointmentKey = snapshot.getKey();
 
-
-                                        mNotification.child(userUid).push().setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        mAdminRef.child(appointmentKey).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    startActivity(new Intent(AppointmentActivity.this, AccountActivity.class));
+                                                    finish();
+                                                    mProgressDialog.dismiss();
 
-                                                if (task.isSuccessful()){
+                                                    //NotificationUtils.remindUserBecauseCharging(mContext);
 
-                                                    Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
+
+                                                    mNotification.child(userUid).child(appointmentKey)
+                                                            .setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                            if (task.isSuccessful()){
+
+                                                                Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
+
+                                                            }
+                                                        }
+                                                    });
+
 
                                                 }
                                             }
                                         });
-
-
                                     }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
                                 }
                             });
+
 
                         }
 

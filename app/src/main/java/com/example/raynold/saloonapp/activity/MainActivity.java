@@ -378,30 +378,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static class HairStyleViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView mTitle;
-        public TextView mDescription;
-        public TextView mPrice;
         public ImageView mImageView;
+        public ProgressBar mProgressBar;
+        View mView;
 
         public HairStyleViewHolder(View itemView) {
             super(itemView);
-            //mTitle = (TextView) itemView.findViewById(R.id.hair_title);
-            //mDescription = (TextView) itemView.findViewById(R.id.hair_description);
-            //mPrice = (TextView) itemView.findViewById(R.id.price);
+            mView = itemView;
+
             mImageView = (ImageView) itemView.findViewById(R.id.style_pic);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.hair_progress);
         }
 
         public void setImage(final String imageUrl) {
-
+            mImageView.setVisibility(View.VISIBLE);
             Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView, new Callback() {
                 @Override
                 public void onSuccess() {
+                    mProgressBar.setVisibility(View.INVISIBLE);
                     Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView);
                 }
 
                 @Override
                 public void onError() {
-                    Picasso.with(itemView.getContext()).load(imageUrl).placeholder(R.drawable.no_image_placeholder).into(mImageView);
+                    Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView);
+                    mProgressBar.setVisibility(View.VISIBLE);
 
                 }
             });

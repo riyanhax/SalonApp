@@ -41,10 +41,15 @@ public class AdminAppointmentAdapter extends RecyclerView.Adapter<AdminAppointme
     public void onBindViewHolder(AdminAppointmentViewHolder holder, int position) {
 
         AdminAppointment appointment = mAppointmentList.get(position);
-        holder.mTime.setText(appointment.getStartTime() + " - " + appointment.getEndTime());
-        holder.mName.setText(appointment.getName());
-        holder.mdate.setText(appointment.getDate());
-        holder.mPhoneNNumber.setText(appointment.getPhoneNumber());
+        try {
+            holder.mTime.setText(appointment.getStartTime() + " - " + appointment.getEndTime());
+            holder.mName.setText(appointment.getName());
+            holder.mdate.setText(appointment.getDate());
+            holder.mPhoneNNumber.setText(appointment.getPhoneNumber());
+        }catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
 
     }
 

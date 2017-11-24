@@ -26,11 +26,11 @@ public class Shop {
         this.detail = detail;
     }
 
-    public String getDetails() {
+    public String getDetail() {
         return detail;
     }
 
-    public void setDetails(String details) {
+    public void setDetail(String detail) {
         this.detail = detail;
     }
 

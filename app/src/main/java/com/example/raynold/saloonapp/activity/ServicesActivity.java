@@ -2,6 +2,7 @@ package com.example.raynold.saloonapp.activity;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -63,8 +64,6 @@ public class ServicesActivity extends AppCompatActivity implements ServicesAdapt
         mServicesRecycler.setAdapter(mServicesAdapter);
         setSupportActionBar(mServicesToolbar);
         getSupportActionBar().setTitle("Services");
-
-        setSupportActionBar(mServicesToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Set up and subscribe (observe) to the ViewModel
@@ -88,6 +87,12 @@ public class ServicesActivity extends AppCompatActivity implements ServicesAdapt
     @Override
     public void onListItemClick(Services services) {
 
-        Toasty.success(ServicesActivity.this, "You clicked on " + services.getTitle(), Toast.LENGTH_LONG).show();
+        Intent serviceDetailIntent = new Intent(ServicesActivity.this, ServicesDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("title",services.getTitle());
+        bundle.putString("detail", services.getDetails());
+        bundle.putString("price", services.getPrice());
+        serviceDetailIntent.putExtras(bundle);
+        startActivity(serviceDetailIntent);
     }
 }

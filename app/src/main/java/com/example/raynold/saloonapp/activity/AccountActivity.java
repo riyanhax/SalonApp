@@ -1,5 +1,6 @@
 package com.example.raynold.saloonapp.activity;
 
+import android.arch.persistence.room.Database;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +39,7 @@ public class AccountActivity extends AppCompatActivity {
 
     private final String ADMIN_REF = "Admin_Appointment";
     FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder> firebaseRecyclerAdapter;
+    String userUid;
     private Toolbar mAccountToolbar;
     private Button mLogOut;
     private DatabaseReference mUserRef;
@@ -51,6 +54,7 @@ public class AccountActivity extends AppCompatActivity {
     private AdminAppointmentAdapter mAdminAppointmentAdapter;
     private RecyclerView mAdminRecycler;
     private List<AdminAppointment> mAdminAppointments = new ArrayList<>();
+    private DatabaseReference mNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,7 @@ public class AccountActivity extends AppCompatActivity {
         mAccountRef = FirebaseDatabase.getInstance().getReference().child("Appointments")
                 .child(mAuth.getCurrentUser().getUid());
         mAdminRef = FirebaseDatabase.getInstance().getReference().child(ADMIN_REF);
+        mNotification = FirebaseDatabase.getInstance().getReference().child("Notifications");
 
         mUserRef.keepSynced(true);
 
@@ -120,13 +125,14 @@ public class AccountActivity extends AppCompatActivity {
 
                 firebaseRecyclerAdapter.notifyItemRemoved(position);
                 mAccountRef.child(appointmentKey).removeValue();
+                mAdminRef.child(appointmentKey).removeValue();
+                mNotification.child(userUid).child(appointmentKey).removeValue();
 
 
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mAppoinmtRecycler);
-        itemTouchHelper.attachToRecyclerView(mAdminRecycler);
 
         mAdminRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -186,7 +192,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void getUserDetails() {
-        String userUid = mAuth.getCurrentUser().getUid();
+        userUid = mAuth.getCurrentUser().getUid();
         mUserRef.child(userUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

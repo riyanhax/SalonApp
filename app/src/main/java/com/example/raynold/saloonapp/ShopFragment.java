@@ -122,7 +122,6 @@ public class ShopFragment extends LifecycleFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_shop, container, false);
 
-        mProgressBar = (ProgressBar) v.findViewById(R.id.shop_progressbar);
         mRecyclerView = (RecyclerView) v.findViewById(R.id.shop_recycler);
         mItemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         mShopRef = FirebaseDatabase.getInstance().getReference().child("Shop");
@@ -193,7 +192,6 @@ public class ShopFragment extends LifecycleFragment {
                             e.printStackTrace();
                         }
 
-                        mProgressBar.setVisibility(View.INVISIBLE);
                         mRecyclerView.setVisibility(View.VISIBLE);
 
                         viewHolder.mWishListBtn.setOnClickListener(new View.OnClickListener() {
@@ -202,7 +200,7 @@ public class ShopFragment extends LifecycleFragment {
                                 viewHolder.mWishListBtn.setImageResource(R.drawable.like);
                                 WishListModel wishListModel =  new WishListModel(model.getName()
                                         ,model.getName(),model.getImage(),model.getPrice()
-                                        ,model.getLocation(), model.getDetails(),1);
+                                        ,model.getLocation(), model.getDetail(),1);
                                 listItemCollectionViewModel.addNewItemToDatabase(wishListModel);
                                 Toasty.info(getContext(), "saved to database", Toast.LENGTH_LONG).show();
                             }
@@ -217,7 +215,7 @@ public class ShopFragment extends LifecycleFragment {
                                 String productLocation = model.getLocation();
                                 String productPrice = model.getPrice();
                                 String productImage = model.getImage();
-                                String productDetails = model.getDetails();
+                                String productDetails = model.getDetail();
 
                                 Intent detailIntent = new Intent(getContext(), WishListDetailActivity.class);
                                 Bundle bundle = new Bundle();
@@ -285,6 +283,7 @@ public class ShopFragment extends LifecycleFragment {
         ImageView mShop_image;
         TextView mShopStore;
         ImageButton mWishListBtn;
+        ProgressBar mProgressBar;
 
         public ShopViewHolder(View itemView) {
             super(itemView);
@@ -294,12 +293,13 @@ public class ShopFragment extends LifecycleFragment {
             mShopTitle = (TextView) itemView.findViewById(R.id.shop_title);
             mShopStore = (TextView) itemView.findViewById(R.id.shop_store);
             mWishListBtn = (ImageButton) itemView.findViewById(R.id.wishlist_btn);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.shop_pic_progress);
 
 
         }
 
         public void setPrice(String price) {
-            mShopPrice.setText("N "+ price);
+            mShopPrice.setText("₦"+ price);
 
         }
         public void setTitle(String title) {
@@ -311,16 +311,18 @@ public class ShopFragment extends LifecycleFragment {
 
         }
         public void setImage(final String image) {
-            Picasso.with(itemView.getContext()).load(image).placeholder(R.drawable.loading_image).into(mShop_image, new Callback() {
+
+            Picasso.with(itemView.getContext()).load(image).into(mShop_image, new Callback() {
                 @Override
                 public void onSuccess() {
-
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Picasso.with(itemView.getContext()).load(image).into(mShop_image);
                 }
 
                 @Override
                 public void onError() {
-
-                    Picasso.with(itemView.getContext()).load(R.drawable.loading_image).into(mShop_image);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    Picasso.with(itemView.getContext()).load(image).into(mShop_image);
                 }
             });
         }
