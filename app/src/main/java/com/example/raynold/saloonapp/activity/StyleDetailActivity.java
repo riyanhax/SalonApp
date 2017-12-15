@@ -13,8 +13,6 @@ import com.squareup.picasso.Picasso;
 
 public class StyleDetailActivity extends AppCompatActivity {
 
-    private TextView mTitle;
-    private TextView mDescription;
     private ImageView mStyleImage;
     private Toolbar mStyleAppbar;
 
@@ -24,14 +22,10 @@ public class StyleDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_style_detail);
 
         mStyleAppbar = (Toolbar) findViewById(R.id.style_appbar);
-        mTitle = (TextView) findViewById(R.id.tv_style_title);
-        mDescription = (TextView) findViewById(R.id.tv_style_description);
         mStyleImage = (ImageView) findViewById(R.id.style_image);
         setSupportActionBar(mStyleAppbar);
 
         Intent intent = getIntent();
-        mTitle.setText(intent.getStringExtra("title"));
-        mDescription.setText(intent.getStringExtra("description"));
 
         getSupportActionBar().setTitle(intent.getStringExtra("title"));
         getSupportActionBar().setDisplayShowHomeEnabled(true);

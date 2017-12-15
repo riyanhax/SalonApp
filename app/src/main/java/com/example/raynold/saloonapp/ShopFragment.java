@@ -139,6 +139,9 @@ public class ShopFragment extends LifecycleFragment {
         mAddProduct = (FloatingActionButton) v.findViewById(R.id.fb_add);
 
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemViewCacheSize(8);
+        mRecyclerView.setDrawingCacheEnabled(true);
+        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(mItemDecoration);
@@ -150,7 +153,6 @@ public class ShopFragment extends LifecycleFragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), AddProductActivity.class));
-                //Toasty.info(ShopActivity.this, "Clicked on the Float action button", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -233,9 +235,15 @@ public class ShopFragment extends LifecycleFragment {
 
                     }
                 };
+
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
 
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     public void getUserData() {
@@ -270,10 +278,11 @@ public class ShopFragment extends LifecycleFragment {
             mAddProduct.setVisibility(View.INVISIBLE);
         }
     }
+
+
     @Override
-    public void onStart() {
-        super.onStart();
-        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+    public void onStop() {
+        super.onStop();
     }
 
     public static class ShopViewHolder extends RecyclerView.ViewHolder {
@@ -312,11 +321,11 @@ public class ShopFragment extends LifecycleFragment {
         }
         public void setImage(final String image) {
 
-            Picasso.with(itemView.getContext()).load(image).into(mShop_image, new Callback() {
+            Picasso.with(itemView.getContext()).load(image).resize(220, 200).into(mShop_image, new Callback() {
                 @Override
                 public void onSuccess() {
                     mProgressBar.setVisibility(View.INVISIBLE);
-                    Picasso.with(itemView.getContext()).load(image).into(mShop_image);
+                    Picasso.with(itemView.getContext()).load(image).resize(220, 200).into(mShop_image);
                 }
 
                 @Override

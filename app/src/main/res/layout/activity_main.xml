@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/style_recyclerview"
+            android:id="@+id/regimen_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="56dp"
@@ -53,19 +53,6 @@
             app:layout_constraintHorizontal_bias="0.952"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <ProgressBar
-            android:id="@+id/hair_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="256dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
     </android.support.constraint.ConstraintLayout>
 
     <com.rom4ek.arcnavigationview.ArcNavigationView
@@ -73,13 +60,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#f06292"
+        android:background="#ffa500"
         android:fitsSystemWindows="true"
         app:arc_cropDirection="cropInside"
         app:arc_width="96dp"
         app:elevation="2dp"
         app:headerLayout="@layout/drawer_header"
-        app:itemIconTint="#e91e63"
+        app:itemIconTint="#fff"
         app:itemTextColor="@android:color/white"
         app:menu="@menu/drawer_menu"
         >

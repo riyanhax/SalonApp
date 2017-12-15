@@ -110,7 +110,7 @@ public class AddProductActivity extends AppCompatActivity {
 
             Uri imageUri = data.getData();
 
-            CropImage.activity(imageUri).setAspectRatio(5, 10).start(this);
+            CropImage.activity(imageUri).setAspectRatio(1, 10).start(this);
 
         }
 

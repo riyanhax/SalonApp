@@ -9,8 +9,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.7"
-        android:background="@drawable/natural_graduated_bob">
+        android:alpha="0.9"
+        android:background="@drawable/lumo_pic_five">
 
     </View>
 
@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             tools:text="Machi Wokekoro"/>
@@ -44,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:textColor="@android:color/black"
         android:textSize="18sp"
@@ -63,7 +65,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lumo Naturals"
+            android:text="@string/lumo_naturals"
             android:textColor="@color/colorPrimary"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -71,9 +73,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All things natural"
+            android:text="@string/beauty_the_natural_way"
             android:textColor="@android:color/black"
             android:textSize="20sp"
+            android:textStyle="bold"
             />
 
         <Button
@@ -83,7 +86,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/btn_corners"
             android:padding="16dp"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="@android:color/white"/>
 
     </LinearLayout>

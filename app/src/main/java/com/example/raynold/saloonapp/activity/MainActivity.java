@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,8 +31,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.raynold.saloonapp.adapter.RegimenAdapter;
 import com.example.raynold.saloonapp.model.HairStyle;
 import com.example.raynold.saloonapp.R;
+import com.example.raynold.saloonapp.model.Regimen;
 import com.example.raynold.saloonapp.saved.WishList;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,17 +49,14 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RegimenAdapter.ListItemClickListener{
 
-    static ProgressBar mProgressBar;
-    private RecyclerView mHairRecyclerview;
-    private LinearLayoutManager mLinearLayoutManager;
-    private List<HairStyle> mHairStyleList;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private Toolbar mToolbar;
@@ -70,10 +70,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference mUserRef;
     private TextView mHeaderUsername;
     private TextView mHeaderEmail;
-    private FloatingActionButton mAddNewHairStyle;
-    private DatabaseReference mHairStyleRef;
-    private DataSnapshot mDataSnapshot;
     private String userId;
+    private List<Regimen> mRegimenList;
+    private RegimenAdapter mRegimenAdapter;
+    private RecyclerView mRegimenRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,24 +83,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Views reference
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open, R.string.close);
-        mHairRecyclerview = (RecyclerView) findViewById(R.id.style_recyclerview);
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mNavigationView = (ArcNavigationView) findViewById(R.id.nav_view);
-        mAddNewHairStyle = (FloatingActionButton) findViewById(R.id.fb_add_new_style);
-        mProgressBar = (ProgressBar) findViewById(R.id.hair_progress);
+        mRegimenRecycler = (RecyclerView) findViewById(R.id.regimen_recyclerview);
+
+        addRegimen();
 
         Picasso picasso = Picasso.with(getApplicationContext());
         picasso.setIndicatorsEnabled(false);
 
 
         //Firebase Connections
-
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mUserRef.keepSynced(true);
-        mHairStyleRef = FirebaseDatabase.getInstance().getReference().child("HairStyles");
-        mHairStyleRef.keepSynced(true);
-
 
         //Nav header ref
         View header = mNavigationView.getHeaderView(0);
@@ -113,11 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
-
-        mHairRecyclerview.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(5), true));
-        mLinearLayoutManager = new LinearLayoutManager(this);
-        mHairRecyclerview.setLayoutManager(new GridLayoutManager(this, 2));
-        mHairRecyclerview.setHasFixedSize(true);
 
         setSupportActionBar(mToolbar);
 
@@ -138,44 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("ILumo");
 
-        mAddNewHairStyle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), AddStyleActivity.class));
-
-            }
-        });
-
-        if (mAuth.getCurrentUser() == null) {
-            mAddNewHairStyle.setVisibility(View.INVISIBLE);
-        }
-
-        try{
-            mUserRef.child(userId).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    mDataSnapshot = dataSnapshot;
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (mDataSnapshot.hasChild("admin")) {
-                mAddNewHairStyle.setVisibility(View.VISIBLE);
-            } else {
-                mAddNewHairStyle.setVisibility(View.INVISIBLE);
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
 
 
     }
@@ -199,44 +152,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<HairStyle, HairStyleViewHolder>(HairStyle.class,R.layout.hair_list_item,HairStyleViewHolder.class,mHairStyleRef) {
-                    @Override
-                    protected void populateViewHolder(final HairStyleViewHolder viewHolder, final HairStyle model, int position) {
-
-                        viewHolder.setImage(model.getPicUrl());
-
-                        mProgressBar.setVisibility(View.INVISIBLE);
-
-                        mHairRecyclerview.setVisibility(View.VISIBLE);
-
-
-                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                Bundle bundle = new Bundle();
-                                Intent styleIntent = new Intent(MainActivity.this, StyleDetailActivity.class);
-                                bundle.putString("image", model.getPicUrl());
-                                bundle.putString("title", model.getTitle());
-                                bundle.putString("description", model.getDescription());
-                                styleIntent.putExtras(bundle);
-                                startActivity(styleIntent);
-
-                            }
-                        });
-
-                    }
-
-                };
-        mHairRecyclerview.setAdapter(firebaseRecyclerAdapter);
-
-
         // Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 // Get details on the currently active default data network
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
 
         if (networkInfo != null && networkInfo.isConnected()) {
 
@@ -267,17 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     mHeaderUsername.setText(dataSnapshot.child("name").getValue().toString());
                     mHeaderEmail.setText(dataSnapshot.child("email").getValue().toString());
-
-                    try {
-                        if (dataSnapshot.hasChild("admin")) {
-                            mAddNewHairStyle.setVisibility(View.VISIBLE);
-                        } else {
-                            mAddNewHairStyle.setVisibility(View.INVISIBLE);
-                        }
-
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
 
                     final String defaultImage = dataSnapshot.child("thumb_image").getValue().toString();
                     if (defaultImage.equals("default")) {
@@ -358,6 +270,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.menu_shop:
                 startActivity(new Intent(MainActivity.this, ShopActivity.class));
                 break;
+            case R.id.menu_styles:
+                startActivity(new Intent(MainActivity.this, StylesActivity.class));
+                break;
         }
         //mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -376,40 +291,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    public static class HairStyleViewHolder extends RecyclerView.ViewHolder{
+    @Override
+    public void onListItemClick(Regimen regimen) {
+    }
 
-        public ImageView mImageView;
-        public ProgressBar mProgressBar;
-        View mView;
+    public void addRegimen(){
 
-        public HairStyleViewHolder(View itemView) {
-            super(itemView);
-            mView = itemView;
+        mRegimenList = new ArrayList<>();
 
-            mImageView = (ImageView) itemView.findViewById(R.id.style_pic);
-            mProgressBar = (ProgressBar) itemView.findViewById(R.id.hair_progress);
-        }
+        mRegimenList.add(new Regimen("Type 4a",
+                "The hair strands of a type 4A are densely packed together giving the hair a thicker appearance but with fine strands. Although 4A hair is better at retaining moisture than the other type 4 hair textures it still requires moisture, and a good detangling technique.",
+                "You can wear your hair loose, in twists, or put it up in a bun. You decide. But always make sure your ends are neatly tucked away most of the time, and protect your hair at night with a satin or silk bonnet or pillowcase. If you decide to add extensions, avoid using uneven volumes that may weigh your natural hair down, and ensure that you keep it hydrated. ",
+                "Type 4A hair requires frequent moisturizing and as a part of your hair care routine, Use water or aloe vera juice to open up your cuticles, then apply a lightweight leave-in conditioner to ensure that your curls remain hydrated and happy at least three times a week. It is also a good idea to use a light oil like avocado oil or grape seed oil for sealing to help reduce frizz.",
+                "Wash every two weeks with a good shampoo of choice. A good detangler and a soft brush will come in handy during your pre poo phase to ensure your curls are separated and to remove any shed hair before you start the process of shampooing your hair. Doing a mud wash every six weeks is also advised to keep your curls shiny, bouncy and your scalp completely build up free.",
+                "Always use a deep penetrating conditioner immediately after your shampoo wash. Leave on for five to ten minutes for adequate absorption before rinsing it out. Use a richly moisturizing deep conditioner bi weekly, and a strengthening hot oil treatment using a mix of oils like palm kernel oil, neem oil, and sesame oils every six weeks will also be wonderful for your pampering sessions.",
+                R.drawable.a
+        ));
 
-        public void setImage(final String imageUrl) {
-            mImageView.setVisibility(View.VISIBLE);
-            Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView, new Callback() {
-                @Override
-                public void onSuccess() {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView);
-                }
+        mRegimenList.add(new Regimen("Type 4b",
+                "Type 4b has less curl definition and does shrink up a lot. If you have 4B hair, you may notice that your hair strands will closely resemble the letter “z’ and have a cotton-like feeling. Type 4B hair can also range in thickness and requires lots of conditioning and hydration as part of your daily natural hair care routine.",
+                "You can wear your hair loose, in twists, or put it up in a bun. You decide. But keeping your hair stretched at all times is important to minimize shrinkage. Using a few drops of an essential oil like lemongrass or rosemary to massage your edges and nape at night also helps with blood circulation and aids hair growth. If you decide to add extensions, avoid using uneven volumes that may weigh your natural hair down, and ensure that you keep it hydrated. Using wigs are also a great option to give your hair a break from constant manipulation.",
+                "Type 4B hair requires frequent moisturizing and as a part of your hair care routine, Spray your hair lightly with a mist bottle, then apply a lightweight leave-in conditioner or rich butter to ensure that your curls remain hydrated and happy at least three times a week, seal with a natural oil of choice only if necessary.",
+                "Washing your hair with a moisturizing conditioner to restore hydration in between wash days isn’t a bad idea. Using a deep cleansing shampoo or doing a pre poo with a light oil helps to ensure that your hair doesn’t shrink up while washing it.",
+                "If your hair feels weak or lacks elasticity, use a protein conditioner to strengthen the hair follicles and prevent breakage. We will advise doing that when required by observing how your hair reacts. Ayurvedic powders like henna, brahmi, amla and bhrinraj are also great alternatives for keeping your protein levels up. Moisturizing deep conditioners can be used once a week or when needed to repair any damage to provide maximum moisture for your natural tresses.",
+                R.drawable.b
+        ));
 
-                @Override
-                public void onError() {
-                    Picasso.with(itemView.getContext()).load(imageUrl).into(mImageView);
-                    mProgressBar.setVisibility(View.VISIBLE);
+        mRegimenList.add(new Regimen("Type 4c",
+                "Type 4c hair is extremely fragile and easily susceptible to breakage if not properly handled. This texture has very little to no curl definition, tangles easily, and can be resistant to moisture. Regular conditioning is required in order to prevent the hair from becoming too dry, brittle, and prone to breakage.",
+                "Wearing protective styles such as braids, locs, and tucked hairstyles will prevent the hair from immature shedding and unnecessary tangling. Ensuring that your hair is adequately detangled and hydrated before a protective style is also vital.",
+                "Type 4C hair loves creamy butters, moisturizing products, and natural oils and butters to hydrate the hair and retain moisture. Whichever methods you choose, Moisturize at least four times a week with emphasis on night care to increase absorption and circulation.",
+                "When cleansing 4c hair, it is best to focus on the scalp and avoid agitation to prevent the hair from becoming tangled or knotted. Use a creamy shampoo with lots of slip to aid in detangling the hair. Use a wide-tooth comb while in the shower to remove tangles starting from the ends of the hair and working upwards.",
+                "Type 4C hair strands are so tightly compacted, this texture is more prone to breakage than any other hair texture. Infusing rich herbs like burdock root, dandelion root, nettle root, horsetail, and moringa into your weekly conditioning routine helps to strengthen, and moisturize the hair.",
+                R.drawable.c
+        ));
 
-                }
-            });
-
-        }
+        mRegimenAdapter = new RegimenAdapter(mRegimenList, MainActivity.this);
+        mRegimenRecycler.setHasFixedSize(true);
+        mRegimenRecycler.addItemDecoration(new GridSpacingItemDecoration(2,dpToPx(5),true));
+        mRegimenRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+        mRegimenRecycler.setAdapter(mRegimenAdapter);
 
     }
+
 
     /**
      * RecyclerView item decoration - give equal margin around grid item
@@ -448,5 +372,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
 
 }

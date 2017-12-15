@@ -12,32 +12,37 @@
 
 
         <item android:id="@+id/menu_services"
-              android:title="@string/services"
-              android:icon="@mipmap/scissors_cutting_hair"/>
+              android:icon="@mipmap/scissors_cutting_hair"
+              android:title="@string/services"/>
+
+        <item android:id="@+id/menu_styles"
+          android:icon="@drawable/hair"
+          android:title="@string/styles"
+        />
 
         <item android:id="@+id/menu_appointment"
-              android:title="@string/appointment"
-              android:icon="@mipmap/ic_time"/>
+              android:icon="@mipmap/ic_time"
+              android:title="@string/appointment"/>
 
 
         <item android:id="@+id/menu_shop"
-              android:title="@string/shop_now"
-              android:icon="@mipmap/shopping_cart"/>
+              android:icon="@mipmap/shopping_cart"
+              android:title="@string/shop_now"/>
 
 
         <item android:id="@+id/menu_call_us"
-              android:title="@string/call_us"
               android:icon="@mipmap/female_telemarketer"
+              android:title="@string/call_us"
             />
 
         <item android:id="@+id/menu_job"
-              android:title="@string/saved"
               android:icon="@drawable/like"
+              android:title="@string/saved"
             />
 
 
         <item android:id="@+id/menu_location"
-              android:title="@string/find_us"
               android:icon="@mipmap/ic_place"
+              android:title="@string/find_us"
             />
 </menu>

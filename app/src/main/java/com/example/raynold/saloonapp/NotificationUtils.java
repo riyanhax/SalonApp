@@ -49,7 +49,7 @@ public class NotificationUtils {
         // - automatically cancels the notification when the notification is clicked
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setSmallIcon(R.drawable.c_kinky_hair_type)
+                .setSmallIcon(R.drawable.lumo_pic_five)
                 .setLargeIcon(largeIcon(context))
                 .setContentTitle(context.getString(R.string.notification_title))
                 .setContentText(context.getString(R.string.notification_body))
@@ -110,7 +110,7 @@ public class NotificationUtils {
         Resources res = context.getResources();
         // COMPLETED (6) Create and return a bitmap using BitmapFactory.decodeResource, passing in the
         // resources object and R.drawable.ic_local_drink_black_24px
-        Bitmap largeIcon = BitmapFactory.decodeResource(res, R.drawable.b_kinky_hair_type);
+        Bitmap largeIcon = BitmapFactory.decodeResource(res, R.drawable.lumo_pic_five);
         return largeIcon;
     }
 }

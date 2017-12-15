@@ -21,7 +21,7 @@ public class ServicesDetailActivity extends AppCompatActivity {
         String detail = intent.getStringExtra("detail");
         String title = intent.getStringExtra("title");
 
-        Toast.makeText(ServicesDetailActivity.this, "data: " + detail + " " + title, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ServicesDetailActivity.this, "data: " + detail + " " + title, Toast.LENGTH_SHORT).show();
 
         mToolbar = (Toolbar) findViewById(R.id.services_detail_toolbar);
         setSupportActionBar(mToolbar);
