@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //mToolbar.setNavigationIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        getSupportActionBar().setIcon(android.R.color.transparent);
+        //getSupportActionBar().setIcon(android.R.color.transparent);
 
         setNavigationViewListener();
 
@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
     public void getUserData() {
 
         mAuth = FirebaseAuth.getInstance();
@@ -329,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mRegimenAdapter = new RegimenAdapter(mRegimenList, MainActivity.this);
         mRegimenRecycler.setHasFixedSize(true);
         mRegimenRecycler.addItemDecoration(new GridSpacingItemDecoration(2,dpToPx(5),true));
-        mRegimenRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+        mRegimenRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRegimenRecycler.setAdapter(mRegimenAdapter);
 
     }

@@ -24,16 +24,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class SignInActivity extends AppCompatActivity {
 
-    private Toolbar mSignInToolbar;
+    @BindView(R.id.email)
+    MaterialEditText mUsername;
+    @BindView(R.id.password)
+    MaterialEditText mPassword;
+    @BindView(R.id.sign_in_button)
+    FancyButton mLoginBtn;
     private FirebaseAuth mAuth;
-    private AutoCompleteTextView mUsername;
-    private EditText mPassword;
-    private Button mLoginBtn;
     private ProgressDialog mProgressDialog;
     private DatabaseReference mUserRef;
 
@@ -41,18 +47,12 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        ButterKnife.bind(this);
 
-        mSignInToolbar = (Toolbar) findViewById(R.id.sign_in_appbar);
-        mUsername = (AutoCompleteTextView) findViewById(R.id.email);
-        mPassword = (EditText) findViewById(R.id.password);
-        mLoginBtn = (Button) findViewById(R.id.sign_in_button);
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         mProgressDialog = new ProgressDialog(this);
 
-        setSupportActionBar(mSignInToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Sign in");
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override

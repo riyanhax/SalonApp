@@ -9,13 +9,12 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toolbar;
-
 import com.example.raynold.saloonapp.R;
 import com.example.raynold.saloonapp.model.HairStyle;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -56,6 +55,7 @@ public class StylesActivity extends AppCompatActivity {
         picasso.setIndicatorsEnabled(false);
 
 
+        mAuth =FirebaseAuth.getInstance();
         mToolbar = (Toolbar) findViewById(R.id.styles_toolbar);
         mAddNewHairStyle = (FloatingActionButton) findViewById(R.id.fb_add_new_style);
         mProgressBar = (ProgressBar) findViewById(R.id.styles_progress);
@@ -66,6 +66,11 @@ public class StylesActivity extends AppCompatActivity {
         mStylesRecyclerView.setItemViewCacheSize(8);
         mStylesRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         mStylesRecyclerView.setDrawingCacheEnabled(true);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Styles");
 
         mAddNewHairStyle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +154,11 @@ public class StylesActivity extends AppCompatActivity {
 
                     }
 
+                    @Override
+                    protected void onCancelled(DatabaseError error) {
+                        super.onCancelled(error);
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                    }
                 };
         mStylesRecyclerView.setAdapter(firebaseRecyclerAdapter);
 

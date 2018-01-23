@@ -6,6 +6,8 @@ import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -49,6 +51,9 @@ public class DetailFragment extends LifecycleFragment {
     private int wish = 0;
     private String productName;
     private ProgressBar mDetailProgress;
+    private ImageButton mShare;
+    private ImageButton mCall;
+
 
 
     public DetailFragment() {
@@ -142,6 +147,8 @@ public class DetailFragment extends LifecycleFragment {
         mWishlist = (ImageButton) v.findViewById(R.id.wishlist_detail_btn);
         mWishAdded = (TextView) v.findViewById(R.id.tv_added_wishlist);
         mDetailProgress = (ProgressBar) v.findViewById(R.id.shop_detail_progress);
+        mCall = (ImageButton) v.findViewById(R.id.call_btn);
+        mShare = (ImageButton) v.findViewById(R.id.share_btn);
 
 
         productName = getArguments().getString("name");
@@ -216,6 +223,33 @@ public class DetailFragment extends LifecycleFragment {
                     wish = 0;
                 }
 
+            }
+        });
+
+        mCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:08094823173"));
+
+                startActivity(callIntent);
+            }
+        });
+
+        mShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String whatsAppMessage = "";
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, whatsAppMessage);
+                sendIntent.setType("text/plain");
+
+                // Do not forget to add this to open whatsApp App specifically
+                sendIntent.setPackage("com.whatsapp");
+                startActivity(sendIntent);
             }
         });
 

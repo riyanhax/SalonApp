@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.raynold.saloonapp.adapter.AdminAppointmentAdapter;
 import com.example.raynold.saloonapp.model.AccountAppointment;
 import com.example.raynold.saloonapp.model.AdminAppointment;
 import com.example.raynold.saloonapp.R;
@@ -38,7 +37,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AccountActivity extends AppCompatActivity {
 
     private final String ADMIN_REF = "Admin_Appointment";
+    private final String MYAPPOINMENT = "My_appoinmtment";
+
     FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder> firebaseRecyclerAdapter;
+    FirebaseRecyclerAdapter<AdminAppointment, AdminAppointmentViewHolder> adminAppoinmetAdapter;
     String userUid;
     private Toolbar mAccountToolbar;
     private Button mLogOut;
@@ -51,7 +53,6 @@ public class AccountActivity extends AppCompatActivity {
     private DividerItemDecoration mItemDecoration;
     private String appointmentKey;
     private DatabaseReference mAdminRef;
-    private AdminAppointmentAdapter mAdminAppointmentAdapter;
     private RecyclerView mAdminRecycler;
     private List<AdminAppointment> mAdminAppointments = new ArrayList<>();
     private DatabaseReference mNotification;
@@ -89,7 +90,7 @@ public class AccountActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        mAccountRef = FirebaseDatabase.getInstance().getReference().child("Appointments")
+        mAccountRef = FirebaseDatabase.getInstance().getReference().child(MYAPPOINMENT)
                 .child(mAuth.getCurrentUser().getUid());
         mAdminRef = FirebaseDatabase.getInstance().getReference().child(ADMIN_REF);
         mNotification = FirebaseDatabase.getInstance().getReference().child("Notifications");
@@ -134,33 +135,6 @@ public class AccountActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(mAppoinmtRecycler);
 
-        mAdminRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String appointmentKey = snapshot.getKey();
-
-                    mAdminRef.child(appointmentKey).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            mAdminAppointments.add(dataSnapshot.getValue(AdminAppointment.class));
-                            mAdminAppointmentAdapter = new AdminAppointmentAdapter(mAdminAppointments);
-                            mAdminRecycler.setAdapter(mAdminAppointmentAdapter);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
@@ -168,6 +142,23 @@ public class AccountActivity extends AppCompatActivity {
         super.onStart();
 
         getUserDetails();
+        adminAppoinmetAdapter = new FirebaseRecyclerAdapter<AdminAppointment,
+                AdminAppointmentViewHolder>(
+                AdminAppointment.class,
+                R.layout.admin_appointment_list,
+                AdminAppointmentViewHolder.class,
+                mAdminRef
+        ) {
+            @Override
+            protected void populateViewHolder(AdminAppointmentViewHolder viewHolder, AdminAppointment model, int position) {
+                viewHolder.mdate.setText(model.getDate());
+                viewHolder.mName.setText(model.getName());
+                viewHolder.mPhoneNNumber.setText(model.getPhoneNumber());
+                viewHolder.mTime.setText(model.getStartTime() + " " + model.getEndTime());
+            }
+        };
+        mAdminRecycler.setAdapter(adminAppoinmetAdapter);
+
          firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder>(
                 AccountAppointment.class,
@@ -268,6 +259,25 @@ public class AccountActivity extends AppCompatActivity {
             mAppointmentDate.setText(date);
         }
 
+    }
 
+    public static class AdminAppointmentViewHolder extends RecyclerView.ViewHolder {
+
+        TextView mName;
+        TextView mTime;
+        TextView mdate;
+        TextView mPhoneNNumber;
+
+
+        public AdminAppointmentViewHolder(View itemView) {
+            super(itemView);
+
+            mTime = (TextView) itemView.findViewById(R.id.tv_appointment_time);
+            mName = (TextView) itemView.findViewById(R.id.tv_appointment_name);
+            mdate = (TextView) itemView.findViewById(R.id.tv_appointment_date);
+            mPhoneNNumber = (TextView) itemView.findViewById(R.id.tv_appointment_phone);
+
+
+        }
     }
 }

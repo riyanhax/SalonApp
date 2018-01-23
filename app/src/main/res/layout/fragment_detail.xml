@@ -23,7 +23,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginStart="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/call_btn"
+        app:layout_constraintBottom_toTopOf="@+id/below_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -149,18 +149,43 @@
     </ScrollView>
 
 
-<ImageButton
-android:id="@+id/call_btn"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:layout_gravity="center_horizontal"
-android:layout_marginBottom="0dp"
-android:layout_marginEnd="0dp"
-android:layout_marginStart="0dp"
-android:background="#4f2010"
-android:src="@mipmap/ic_call_now"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent"/>
+    <LinearLayout
+        android:id="@+id/below_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/call_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_weight="1"
+            android:background="#4f2010"
+            android:src="@mipmap/ic_call_now"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/share_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:src="@mipmap/ic_share"/>
+
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

@@ -10,23 +10,26 @@ import android.widget.Button;
 
 import com.example.raynold.saloonapp.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class LogInActivity extends AppCompatActivity {
 
-    private Button mSignInBtn;
-    private Button mRegBtn;
-    private Toolbar mLoginToolbar;
+    @BindView(R.id.goto_signin_activity)
+    FancyButton mSignInBtn;
+
+    @BindView(R.id.goto_reg_activity)
+    FancyButton mRegBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+        ButterKnife.bind(this);
 
-        mSignInBtn = (Button) findViewById(R.id.goto_signin_activity);
-        mRegBtn = (Button)findViewById(R.id.goto_reg_activity);
-        mLoginToolbar = (Toolbar) findViewById(R.id.login_toolbar);
 
-        setSupportActionBar(mLoginToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         mSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override

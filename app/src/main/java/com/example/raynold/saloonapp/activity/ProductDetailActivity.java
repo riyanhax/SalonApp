@@ -3,6 +3,7 @@ package com.example.raynold.saloonapp.activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.media.Image;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private String productName;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         mProductLocation = (TextView) findViewById(R.id.product_location);
         mProductInfo = (TextView) findViewById(R.id.product_info);
         mWishlist = (ImageButton) findViewById(R.id.wishlist_detail_btn);
+
         setSupportActionBar(mToolbar);
 
         productName = getIntent().getStringExtra("name");

@@ -29,8 +29,6 @@
         <item>Swipe to delete</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="notification_title">New Appointment</string>
     <string name="notification_body">New appointment from a user</string>
     <string name="lumo_naturals">Lumo Naturals</string>
@@ -40,4 +38,5 @@
     <string name="cleanse">Cleanse</string>
     <string name="condition">Condition</string>
     <string name="moisturize">Moisturize</string>
+    <string name="cancel">Cancel</string>
 </resources>

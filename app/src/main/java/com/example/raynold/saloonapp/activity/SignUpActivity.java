@@ -22,20 +22,30 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private Toolbar mSignUpToolbar;
-    private TextInputLayout mRegUsername;
-    private TextInputLayout mRegEmail;
-    private TextInputLayout mRegPhoneNum;
-    private TextInputLayout mRegPassword;
-    private TextInputLayout mRegRePassword;
-    private Button mRegBtn;
+    @BindView(R.id.reg_display_name)
+    MaterialEditText mRegUsername;
+    @BindView(R.id.register_email)
+    MaterialEditText mRegEmail;
+    @BindView(R.id.reg_phone_num)
+    MaterialEditText mRegPhoneNum;
+    @BindView(R.id.register_password)
+    MaterialEditText mRegPassword;
+    @BindView(R.id.register_re_password)
+    MaterialEditText mRegRePassword;
+    @BindView(R.id.reg_create_button)
+    FancyButton mRegBtn;
+
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private DatabaseReference mUserRef;
     private FirebaseAuth mAuth;
@@ -45,23 +55,20 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        ButterKnife.bind(this);
 
         referenceViews();
 
-        mSignUpToolbar = (Toolbar) findViewById(R.id.sign_up_toolbar);
-        setSupportActionBar(mSignUpToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Sign up");
 
         mRegBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String username = mRegUsername.getEditText().getText().toString();
-                String email = mRegEmail.getEditText().getText().toString();
-                String phoneNumb = mRegPhoneNum.getEditText().getText().toString();
-                String password = mRegPassword.getEditText().getText().toString();
-                String rePassword = mRegRePassword.getEditText().getText().toString();
+                String username = mRegUsername.getText().toString();
+                String email = mRegEmail.getText().toString();
+                String phoneNumb = mRegPhoneNum.getText().toString();
+                String password = mRegPassword.getText().toString();
+                String rePassword = mRegRePassword.getText().toString();
 
                 if (!TextUtils.isEmpty(username) || !TextUtils.isEmpty(email) || !TextUtils.isEmpty(phoneNumb) || !TextUtils.isEmpty(password) || !TextUtils.isEmpty(rePassword)) {
 
@@ -158,13 +165,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void referenceViews() {
 
-        mRegUsername = (TextInputLayout) findViewById(R.id.reg_display_name);
-        mRegEmail = (TextInputLayout) findViewById(R.id.register_email);
-        mRegPhoneNum = (TextInputLayout) findViewById(R.id.reg_phone_num);
-        mRegPassword = (TextInputLayout) findViewById(R.id.register_password);
-        mRegRePassword = (TextInputLayout) findViewById(R.id.register_re_password);
         mProgressDialog = new ProgressDialog(this);
-        mRegBtn = (Button) findViewById(R.id.reg_create_button);
         mAuth = FirebaseAuth.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
     }

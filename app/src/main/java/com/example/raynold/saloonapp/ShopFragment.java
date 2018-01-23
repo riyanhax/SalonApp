@@ -157,6 +157,12 @@ public class ShopFragment extends LifecycleFragment {
         });
 
         getUserData();
+        //getProductData();
+
+        return v;
+    }
+
+    public void getProductData() {
 
         firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Shop, ShopViewHolder>(Shop.class,R.layout.shop_list_item,ShopViewHolder.class,mShopRef) {
@@ -193,8 +199,6 @@ public class ShopFragment extends LifecycleFragment {
                         } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
-
-                        mRecyclerView.setVisibility(View.VISIBLE);
 
                         viewHolder.mWishListBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -235,15 +239,15 @@ public class ShopFragment extends LifecycleFragment {
 
                     }
                 };
-
+        firebaseRecyclerAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
-
-        return v;
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
+        getProductData();
     }
 
     public void getUserData() {

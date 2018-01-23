@@ -106,6 +106,8 @@
         </activity>
         <activity android:name=".activity.RegimenDetailActivity">
         </activity>
+        <activity android:name=".activity.AdminAppoinmentListActivity">
+        </activity>
     </application>
 
 </manifest>

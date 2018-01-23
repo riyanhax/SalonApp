@@ -2,8 +2,11 @@ package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -41,7 +44,11 @@ import es.dmoral.toasty.Toasty;
 public class AppointmentActivity extends AppCompatActivity implements AppointmentAdapter.AppointmentClickListener {
 
     private final String adminRef = "Admin_Appointment";
+    private final String MYAPPOINMENT = "My_appoinmtment";
+
     String appointmentKey;
+    String newKey;
+    long appoinmentLimit;
     private Toolbar mAppointmentToolbar;
     private RecyclerView mRecyclerView;
     private List<Appointment> mAppointmentList;
@@ -54,10 +61,11 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
     private ProgressDialog mProgressDialog;
     private String Username;
     private String userEmail;
-    private Context mContext = this;
     private DatabaseReference mAdminRef;
     private DatabaseReference mNotification;
     private String adminUid = "cgr2P4gMnjaX5OtcUGagEiTEI482";
+    private long numberOfChild;
+    private DatabaseReference mMyAppoinmentRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +73,10 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
         setContentView(R.layout.activity_appointment);
 
         mAppointmentList = new ArrayList<>();
-        mAppointmentList.add(new Appointment("8:00AM", "9:00AM","Book"));
-        mAppointmentList.add(new Appointment("9:00AM", "10:00AM", "Book"));
-        mAppointmentList.add(new Appointment("10:00AM", "11:00AM" , "Book"));
-        mAppointmentList.add(new Appointment("11:00AM", "12:00PM" ,"Book"));
-        mAppointmentList.add(new Appointment("12:00PM", "1:00PM", "Book"));
-        mAppointmentList.add(new Appointment("1:00PM", "2:00PM" , "Book"));
-        mAppointmentList.add(new Appointment("2:00PM", "3:00PM" ,"Book"));
-        mAppointmentList.add(new Appointment("3:00PM", "4:00PM", "Book"));
-        mAppointmentList.add(new Appointment("4:00PM", "5:00PM" , "Book"));
-        mAppointmentList.add(new Appointment("5:00PM", "6:00PM" ,"Book"));
-        mAppointmentList.add(new Appointment("6:00PM", "7:00PM", "Book"));
-        mAppointmentList.add(new Appointment("7:00PM", "8:00PM", "Book"));
+        mAppointmentList.add(new Appointment("8:00AM", "11:00AM","Book"));
+        mAppointmentList.add(new Appointment("11:00AM", "2:00PM" ,"Book"));
+        mAppointmentList.add(new Appointment("2:00PM", "5:00PM" ,"Book"));
+        mAppointmentList.add(new Appointment("5:00PM", "8:00PM" ,"Book"));
 
         mAppointmentAdapter = new AppointmentAdapter(mAppointmentList, this);
 
@@ -86,6 +86,7 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
         mAppointmentRef = FirebaseDatabase.getInstance().getReference().child("Appointments");
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mNotification = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        mMyAppoinmentRef = FirebaseDatabase.getInstance().getReference().child(MYAPPOINMENT);
         mAdminRef = FirebaseDatabase.getInstance().getReference().child(adminRef);
         mAuth = FirebaseAuth.getInstance();
 
@@ -131,9 +132,8 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
             public void onDateSelected(Date date, int position) {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM yyyy", Locale.ENGLISH);
-                String date1 = dateFormat.format(date);
 
-                currentDate = date1;
+                currentDate = dateFormat.format(date);
 
             }
 
@@ -189,67 +189,79 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
                 notificationMap.put("user_uid", userUid);
                 notificationMap.put("admin_uid", adminUid);
 
+                String currentdateNoSpace = currentDate.replaceAll("\\s","");
+                newKey = currentdateNoSpace+appointment.getStartTime()+appointment.getEndTime();
 
-                mAppointmentRef.child(userUid).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                mAppointmentRef.child(newKey).addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onDataChange(final DataSnapshot dataSnapshot) {
+                        numberOfChild = dataSnapshot.getChildrenCount();
 
-                        if (task.isSuccessful()) {
+                        if (numberOfChild >= 4) {
+                            mProgressDialog.cancel();
+                            AlertDialog.Builder builder;
 
-                            mAppointmentRef.child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            builder = new AlertDialog.Builder(AppointmentActivity.this);
+
+                            builder.setTitle("Slot fully booked")
+                                    .setMessage("Select a different time or date")
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // do nothing
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                        } else {
+
+                            mAppointmentRef.child(newKey).child(userUid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                public void onComplete(@NonNull Task<Void> task) {
 
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        appointmentKey = snapshot.getKey();
+                                    if (task.isSuccessful()) {
 
-                                        mAdminRef.child(appointmentKey).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        Toasty.info(AppointmentActivity.this, "Appointment added ", Toast.LENGTH_LONG).show();
+
+                                        mMyAppoinmentRef.child(userUid).push().setValue(hashMap).isSuccessful();
+
+                                        mAdminRef.push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    startActivity(new Intent(AppointmentActivity.this, AccountActivity.class));
-                                                    finish();
-                                                    mProgressDialog.dismiss();
 
-                                                    //NotificationUtils.remindUserBecauseCharging(mContext);
+                                                    mProgressDialog.cancel();
 
-
-                                                    mNotification.child(userUid).child(appointmentKey)
+                                                    mNotification.child(userUid).push()
                                                             .setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
 
                                                             if (task.isSuccessful()){
 
-                                                                Toasty.info(AppointmentActivity.this, "Appointment added", Toast.LENGTH_LONG).show();
-
                                                             }
                                                         }
                                                     });
 
-
                                                 }
                                             }
                                         });
+
+                                    } else if (!task.isSuccessful()) {
+                                        Toasty.warning(AppointmentActivity.this, "You've already booked for this date and time", Toast.LENGTH_LONG).show();
+
                                     }
 
                                 }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
                             });
-
-
-                        }
-
-                        if (!task.isSuccessful()) {
-                            mProgressDialog.dismiss();
-                            Toasty.error(AppointmentActivity.this, "sorry something went wrong, try again").show();
                         }
                     }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
                 });
+
             }
 
             @Override
