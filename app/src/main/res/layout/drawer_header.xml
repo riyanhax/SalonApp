@@ -18,17 +18,11 @@
         android:id="@+id/logged_in_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/thumb_image"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="40dp"
-            tools:src="@drawable/natural_graduated_bob"/>
 
         <TextView
             android:id="@+id/header_username"
@@ -38,7 +32,8 @@
             android:layout_marginStart="16dp"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            tools:text="Machi Wokekoro"/>
+            tools:text="Machi Wokekoro"
+            />
 
     <TextView
         android:id="@+id/header_email"

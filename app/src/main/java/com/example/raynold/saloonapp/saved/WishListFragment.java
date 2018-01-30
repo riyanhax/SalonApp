@@ -3,7 +3,6 @@ package com.example.raynold.saloonapp.saved;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -45,7 +44,7 @@ import es.dmoral.toasty.Toasty;
  * Use the {@link WishListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WishListFragment extends LifecycleFragment {
+public class WishListFragment extends Fragment {
 
 
     private static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
@@ -165,13 +164,6 @@ public class WishListFragment extends LifecycleFragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mWishListAdapter = new SaveWishListAdapter();
         mRecyclerView.setAdapter(mWishListAdapter);
-
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(
-                mRecyclerView.getContext(),
-                layoutManager.getOrientation()
-        );
-
-        mRecyclerView.addItemDecoration(itemDecoration);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
         itemTouchHelper.attachToRecyclerView(mRecyclerView);

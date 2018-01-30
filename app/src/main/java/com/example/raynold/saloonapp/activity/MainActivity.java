@@ -35,6 +35,7 @@ import com.example.raynold.saloonapp.adapter.RegimenAdapter;
 import com.example.raynold.saloonapp.model.HairStyle;
 import com.example.raynold.saloonapp.R;
 import com.example.raynold.saloonapp.model.Regimen;
+import com.example.raynold.saloonapp.model.Token;
 import com.example.raynold.saloonapp.saved.WishList;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +45,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.rom4ek.arcnavigationview.ArcNavigationView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mGotoLogin = (Button) header.findViewById(R.id.goto_login_activity);
         mLinearLayout = (LinearLayout) header.findViewById(R.id.logged_in_layout);
         mLoggedOutLayout = (LinearLayout) header.findViewById(R.id.logged_out_layout);
-        mCircleImageView = (CircleImageView) header.findViewById(R.id.thumb_image);
+        //mCircleImageView = (CircleImageView) header.findViewById(R.id.thumb_image);
         mHeaderEmail = (TextView) header.findViewById(R.id.header_email);
         mHeaderUsername = (TextView) header.findViewById(R.id.header_username);
 
@@ -129,8 +132,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("ILumo");
 
+        if (mAuth.getCurrentUser() != null) {
+            updateToken(FirebaseInstanceId.getInstance().getToken());
+        }
+    }
 
+    private void updateToken(String tokenId) {
+        FirebaseFirestore mTokenRef = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        Token token = new Token(tokenId, false);
 
+        mTokenRef.collection("Token").document(mAuth.getUid()).set(token).isSuccessful();
     }
 
     @Override
@@ -191,22 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mHeaderEmail.setText(dataSnapshot.child("email").getValue().toString());
 
                     final String defaultImage = dataSnapshot.child("thumb_image").getValue().toString();
-                    if (defaultImage.equals("default")) {
-                        Picasso.with(MainActivity.this).load(R.mipmap.ic_default_image).into(mCircleImageView);
-                    } else {
 
-                        Picasso.with(MainActivity.this).load(defaultImage).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.mipmap.ic_default_image).into(mCircleImageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                Picasso.with(MainActivity.this).load(defaultImage).placeholder(R.mipmap.ic_default_image).into(mCircleImageView);
-                            }
-
-                            @Override
-                            public void onError() {
-                                Picasso.with(MainActivity.this).load(defaultImage).placeholder(R.mipmap.ic_default_image).into(mCircleImageView);
-                            }
-                        });
-                    }
 
 
                     if (mAuth.getCurrentUser() != null) {

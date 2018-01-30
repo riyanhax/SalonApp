@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
  * Created by RAYNOLD on 9/19/2017.
  */
 
-@Database(entities = {WishListModel.class},version = 2)
+@Database(entities = {WishListModel.class},version = 3,exportSchema = false)
 public abstract class SavedItemDatabase extends RoomDatabase {
 
     public abstract ShopDao mShopDao();

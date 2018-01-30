@@ -2,6 +2,7 @@ package com.example.raynold.saloonapp.activity;
 
 import android.arch.persistence.room.Database;
 import android.content.Intent;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.raynold.saloonapp.adapter.PagerViewAdapter;
 import com.example.raynold.saloonapp.model.AccountAppointment;
 import com.example.raynold.saloonapp.model.AdminAppointment;
 import com.example.raynold.saloonapp.R;
@@ -32,199 +34,96 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private final String ADMIN_REF = "Admin_Appointment";
-    private final String MYAPPOINMENT = "My_appoinmtment";
 
-    FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder> firebaseRecyclerAdapter;
-    FirebaseRecyclerAdapter<AdminAppointment, AdminAppointmentViewHolder> adminAppoinmetAdapter;
-    String userUid;
-    private Toolbar mAccountToolbar;
-    private Button mLogOut;
-    private DatabaseReference mUserRef;
-    private FirebaseAuth mAuth;
-    private CircleImageView mAccountImage;
-    private TextView mAccountName;
-    private DatabaseReference mAccountRef;
-    private RecyclerView mAppoinmtRecycler;
-    private DividerItemDecoration mItemDecoration;
-    private String appointmentKey;
-    private DatabaseReference mAdminRef;
-    private RecyclerView mAdminRecycler;
-    private List<AdminAppointment> mAdminAppointments = new ArrayList<>();
-    private DatabaseReference mNotification;
+    @BindView(R.id.profile_label)
+    TextView mProfileLabel;
+    @BindView(R.id.appointment_label)
+    TextView mAppoinmentLabel;
+    @BindView(R.id.mainPager)
+    ViewPager mViewPager;
+
+    private PagerViewAdapter mPagerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+        ButterKnife.bind(this);
 
-        mAccountToolbar = (Toolbar) findViewById(R.id.account_appbar);
-        mLogOut = (Button) findViewById(R.id.log_out_btn);
-        mAccountImage = (CircleImageView) findViewById(R.id.account_image);
-        mAccountName = (TextView) findViewById(R.id.account_username);
+        mPagerViewAdapter = new PagerViewAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mPagerViewAdapter);
 
         //all users appoinment recyclerview setup
-        mAppoinmtRecycler = (RecyclerView) findViewById(R.id.account_appoint_recycler);
-        mAppoinmtRecycler.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-        mAppoinmtRecycler.setLayoutManager(linearLayoutManager);
-        mItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mAppoinmtRecycler.addItemDecoration(mItemDecoration);
 
-        //admin appointment recyclerview setup
-        mAdminRecycler = (RecyclerView) findViewById(R.id.admin_appoint_recycler);
-        mAdminRecycler.setHasFixedSize(true);
-        LinearLayoutManager adminLayout = new LinearLayoutManager(this);
-        adminLayout.setReverseLayout(true);
-        adminLayout.setStackFromEnd(true);
-        mAdminRecycler.setLayoutManager(adminLayout);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mAdminRecycler.addItemDecoration(dividerItemDecoration);
-
-
-        mAuth = FirebaseAuth.getInstance();
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        mAccountRef = FirebaseDatabase.getInstance().getReference().child(MYAPPOINMENT)
-                .child(mAuth.getCurrentUser().getUid());
-        mAdminRef = FirebaseDatabase.getInstance().getReference().child(ADMIN_REF);
-        mNotification = FirebaseDatabase.getInstance().getReference().child("Notifications");
-
-        mUserRef.keepSynced(true);
-
-        setSupportActionBar(mAccountToolbar);
-        getSupportActionBar().setTitle("My Account");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mLogOut.setOnClickListener(new View.OnClickListener() {
+        mProfileLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(AccountActivity.this,MainActivity.class ));
-                finish();
+                mViewPager.setCurrentItem(0);
+                mProfileLabel.setTextColor(getResources().getColor(R.color.textTabLight));
+                mAppoinmentLabel.setTextColor(getResources().getColor(R.color.textTabBright));
             }
         });
 
-        getUserDetails();
-
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
+        mAppoinmentLabel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(1);
+                mAppoinmentLabel.setTextColor(getResources().getColor(R.color.textTabLight));
+                mProfileLabel.setTextColor(getResources().getColor(R.color.textTabBright));
+            }
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                changeTabs(position);
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onPageSelected(int position) {
 
-                int position = viewHolder.getAdapterPosition();
-
-                firebaseRecyclerAdapter.notifyItemRemoved(position);
-                mAccountRef.child(appointmentKey).removeValue();
-                mAdminRef.child(appointmentKey).removeValue();
-                mNotification.child(userUid).child(appointmentKey).removeValue();
-
-
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(mAppoinmtRecycler);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        getUserDetails();
-        adminAppoinmetAdapter = new FirebaseRecyclerAdapter<AdminAppointment,
-                AdminAppointmentViewHolder>(
-                AdminAppointment.class,
-                R.layout.admin_appointment_list,
-                AdminAppointmentViewHolder.class,
-                mAdminRef
-        ) {
-            @Override
-            protected void populateViewHolder(AdminAppointmentViewHolder viewHolder, AdminAppointment model, int position) {
-                viewHolder.mdate.setText(model.getDate());
-                viewHolder.mName.setText(model.getName());
-                viewHolder.mPhoneNNumber.setText(model.getPhoneNumber());
-                viewHolder.mTime.setText(model.getStartTime() + " " + model.getEndTime());
-            }
-        };
-        mAdminRecycler.setAdapter(adminAppoinmetAdapter);
-
-         firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<AccountAppointment, AccountViewHolder>(
-                AccountAppointment.class,
-                R.layout.account_list_item,
-                AccountViewHolder.class,
-                mAccountRef
-
-        ) {
-            @Override
-            protected void populateViewHolder(AccountViewHolder viewHolder, AccountAppointment model, int position) {
-
-                appointmentKey = getRef(position).getKey();
-
-
-                viewHolder.setText(model.getStartTime(), model.getEndTime());
-                viewHolder.setDate(model.getDate());
-
-            }
-        };
-
-        mAppoinmtRecycler.setAdapter(firebaseRecyclerAdapter);
-    }
-
-    private void getUserDetails() {
-        userUid = mAuth.getCurrentUser().getUid();
-        mUserRef.child(userUid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.hasChild("admin")) {
-
-                    mAdminRecycler.setVisibility(View.VISIBLE);
-                    mAppoinmtRecycler.setVisibility(View.INVISIBLE);
-                } else {
-                    mAdminRecycler.setVisibility(View.INVISIBLE);
-                    mAppoinmtRecycler.setVisibility(View.VISIBLE);
-
-                }
-
-                final String image = dataSnapshot.child("thumb_image").getValue().toString();
-                String username = dataSnapshot.child("name").getValue().toString();
-
-                mAccountName.setText(username);
-                Picasso.with(AccountActivity.this).load(image).placeholder(R.mipmap.ic_default_image)
-                        .networkPolicy(NetworkPolicy.OFFLINE).into(mAccountImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        Picasso.with(AccountActivity.this).load(image).placeholder(R.mipmap.ic_default_image)
-                                .networkPolicy(NetworkPolicy.OFFLINE).into(mAccountImage);
-                    }
-
-                    @Override
-                    public void onError() {
-                        Picasso.with(AccountActivity.this).load(image).placeholder(R.mipmap.ic_default_image)
-                                .into(mAccountImage);
-                    }
-                });
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
 
     }
+
+    private void changeTabs(int position) {
+
+        switch (position) {
+            case 0:
+                mProfileLabel.setTextColor(getResources().getColor(R.color.textTabLight));
+                mProfileLabel.setTextSize(22);
+
+                mAppoinmentLabel.setTextColor(getResources().getColor(R.color.colorPrimary));
+                mAppoinmentLabel.setTextSize(16);
+                break;
+
+            case 1:
+
+                mAppoinmentLabel.setTextColor(getResources().getColor(R.color.textTabLight));
+                mAppoinmentLabel.setTextSize(22);
+
+                mProfileLabel.setTextColor(getResources().getColor(R.color.colorPrimary));
+                mProfileLabel.setTextSize(16);
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -237,47 +136,4 @@ public class AccountActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class AccountViewHolder extends RecyclerView.ViewHolder {
-
-        TextView mAppointmentTime;
-        TextView mAppointmentDate;
-        View mView;
-
-        public AccountViewHolder(View itemView) {
-            super(itemView);
-            mView = itemView;
-        }
-
-        public void setText(String start, String end) {
-
-            mAppointmentTime = (TextView) mView.findViewById(R.id.appointment_time);
-            mAppointmentTime.setText(start + " - " + end);
-        }
-
-        public void setDate(String date) {
-            mAppointmentDate = (TextView) mView.findViewById(R.id.appointment_date);
-            mAppointmentDate.setText(date);
-        }
-
-    }
-
-    public static class AdminAppointmentViewHolder extends RecyclerView.ViewHolder {
-
-        TextView mName;
-        TextView mTime;
-        TextView mdate;
-        TextView mPhoneNNumber;
-
-
-        public AdminAppointmentViewHolder(View itemView) {
-            super(itemView);
-
-            mTime = (TextView) itemView.findViewById(R.id.tv_appointment_time);
-            mName = (TextView) itemView.findViewById(R.id.tv_appointment_name);
-            mdate = (TextView) itemView.findViewById(R.id.tv_appointment_date);
-            mPhoneNNumber = (TextView) itemView.findViewById(R.id.tv_appointment_phone);
-
-
-        }
-    }
 }

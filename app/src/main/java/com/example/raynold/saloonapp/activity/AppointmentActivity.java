@@ -1,32 +1,42 @@
 package com.example.raynold.saloonapp.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.raynold.saloonapp.R;
+import com.example.raynold.saloonapp.Remote.APIService;
 import com.example.raynold.saloonapp.adapter.AppointmentAdapter;
 import com.example.raynold.saloonapp.model.Appointment;
-import com.example.raynold.saloonapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.raynold.saloonapp.model.MyResponse;
+import com.example.raynold.saloonapp.model.Notification;
+import com.example.raynold.saloonapp.model.Sender;
+import com.example.raynold.saloonapp.model.Token;
+import com.example.raynold.saloonapp.util.Utils;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,15 +50,16 @@ import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import es.dmoral.toasty.Toasty;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AppointmentActivity extends AppCompatActivity implements AppointmentAdapter.AppointmentClickListener {
 
-    private final String adminRef = "Admin_Appointment";
+    private final String ADMINREF = "Admin_Appointment";
     private final String MYAPPOINMENT = "My_appoinmtment";
 
-    String appointmentKey;
     String newKey;
-    long appoinmentLimit;
     private Toolbar mAppointmentToolbar;
     private RecyclerView mRecyclerView;
     private List<Appointment> mAppointmentList;
@@ -66,11 +77,17 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
     private String adminUid = "cgr2P4gMnjaX5OtcUGagEiTEI482";
     private long numberOfChild;
     private DatabaseReference mMyAppoinmentRef;
+    private FirebaseFirestore mFirebaseFirestore;
+    private FirebaseFirestore mUserAppointment;
+
+    private APIService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
+
+        mService = Utils.getFCMService();
 
         mAppointmentList = new ArrayList<>();
         mAppointmentList.add(new Appointment("8:00AM", "11:00AM","Book"));
@@ -82,12 +99,16 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
 
         mAppointmentToolbar = (Toolbar) findViewById(R.id.appoint_toolbar);
         mRecyclerView = (RecyclerView) findViewById(R.id.appoinment_recycler);
+
+        mFirebaseFirestore = FirebaseFirestore.getInstance();
+        mUserAppointment = FirebaseFirestore.getInstance();
+
         mProgressDialog = new ProgressDialog(this);
         mAppointmentRef = FirebaseDatabase.getInstance().getReference().child("Appointments");
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mNotification = FirebaseDatabase.getInstance().getReference().child("Notifications");
         mMyAppoinmentRef = FirebaseDatabase.getInstance().getReference().child(MYAPPOINMENT);
-        mAdminRef = FirebaseDatabase.getInstance().getReference().child(adminRef);
+        mAdminRef = FirebaseDatabase.getInstance().getReference().child(ADMINREF);
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() == null) {
@@ -183,6 +204,11 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
                 hashMap.put("user_uid", userUid);
                 hashMap.put("phoneNumber", phoneNum);
 
+                final HashMap<String, String> userHashMap = new HashMap<>();
+                hashMap.put("startTime", appointment.getStartTime());
+                hashMap.put("endTime", appointment.getEndTime());
+                hashMap.put("date", currentDate);
+
                 final HashMap<String, String> notificationMap = new HashMap<>();
                 notificationMap.put("name", Username);
                 notificationMap.put("email", userEmail);
@@ -214,43 +240,26 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
                                     .show();
                         } else {
 
-                            mAppointmentRef.child(newKey).child(userUid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            mAppointmentRef.child(newKey).child(userUid).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                                public void onSuccess(Void aVoid) {
 
-                                    if (task.isSuccessful()) {
+                                    mUserAppointment.collection("my_appoinment").add(userHashMap).addOnSuccessListener(AppointmentActivity.this, new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
 
-                                        Toasty.info(AppointmentActivity.this, "Appointment added ", Toast.LENGTH_LONG).show();
-
-                                        mMyAppoinmentRef.child(userUid).push().setValue(hashMap).isSuccessful();
-
-                                        mAdminRef.push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
+                                            mFirebaseFirestore.collection(ADMINREF).add(hashMap).addOnSuccessListener(AppointmentActivity.this,new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
 
                                                     mProgressDialog.cancel();
-
-                                                    mNotification.child(userUid).push()
-                                                            .setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                                            if (task.isSuccessful()){
-
-                                                            }
-                                                        }
-                                                    });
-
+                                                    Toasty.info(AppointmentActivity.this, "Appointment added ", Toast.LENGTH_LONG).show();
+                                                    sendNotification();
                                                 }
-                                            }
-                                        });
+                                            });
 
-                                    } else if (!task.isSuccessful()) {
-                                        Toasty.warning(AppointmentActivity.this, "You've already booked for this date and time", Toast.LENGTH_LONG).show();
-
-                                    }
-
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -271,5 +280,48 @@ public class AppointmentActivity extends AppCompatActivity implements Appointmen
         });
 
 
+    }
+
+    private void sendNotification() {
+        Token token = new Token(FirebaseInstanceId.getInstance().getToken(), true);
+        FirebaseFirestore tokenRef = FirebaseFirestore.getInstance();
+
+
+        tokenRef.collection("Token").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
+
+
+
+                    Token token1 = documentChange.getDocument().toObject(Token.class);
+
+                    if (token1.isServerToken()) {
+                        Notification notification = new Notification("Lumo Naturals", "You have a new Appointment");
+                        Sender sender = new Sender(token1.getToken(), notification);
+                        mService.sendNotification(sender)
+                                .enqueue(new Callback<MyResponse>() {
+                                    @Override
+                                    public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                        if (response.body().success == 1) {
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                    }
+                                });
+
+
+                        Log.i("Appointment", " "+token1.isServerToken());
+                    }
+
+
+                }
+            }
+        });
     }
 }

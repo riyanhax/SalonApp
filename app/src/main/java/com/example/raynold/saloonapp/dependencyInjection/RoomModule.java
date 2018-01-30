@@ -2,7 +2,10 @@ package com.example.raynold.saloonapp.dependencyInjection;
 
 import android.app.Application;
 import android.arch.lifecycle.ViewModelProvider;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
+import android.support.annotation.NonNull;
 
 import com.example.raynold.saloonapp.data.SavedItemDatabase;
 import com.example.raynold.saloonapp.data.SavedItemRepository;
@@ -21,6 +24,12 @@ import dagger.Provides;
 @Module
 public class RoomModule {
 
+    static final Migration MIGRATION_2_3 = new Migration(2,3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+        }
+    };
     private final SavedItemDatabase database;
 
     public RoomModule(Application application) {
@@ -28,7 +37,7 @@ public class RoomModule {
                 application,
                 SavedItemDatabase.class,
                 "WishList.db"
-        ).build();
+        ).fallbackToDestructiveMigration().build();
     }
 
     @Provides

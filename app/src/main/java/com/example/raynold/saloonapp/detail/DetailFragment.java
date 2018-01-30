@@ -2,7 +2,6 @@ package com.example.raynold.saloonapp.detail;
 
 
 import android.animation.Animator;
-import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -10,6 +9,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +31,13 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends LifecycleFragment {
+public class DetailFragment extends Fragment{
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -41,20 +45,26 @@ public class DetailFragment extends LifecycleFragment {
     ShopItemViewModel mShopItemViewModel;
     SavedItemCollectionViewModel mSavedItemCollectionViewModel;
 
-    private TextView mProductName;
-    private TextView mProductPrice;
-    private TextView mProductInfo;
-    private ImageView mProductImage;
-    private TextView mProductLocation;
+    @BindView(R.id.product_name)
+    TextView mProductName;
+    @BindView(R.id.product_price)
+    TextView mProductPrice;
+    @BindView(R.id.product_info)
+    TextView mProductInfo;
+    @BindView(R.id.product_image)
+    ImageView mProductImage;
+    @BindView(R.id.product_location)
+    TextView mProductLocation;
+    @BindView(R.id.shop_collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.wishlist_detail_btn)
+    ImageButton mWishlist;
+    //private ImageButton mShare;
+    @BindView(R.id.fb_call)
+    FloatingActionButton mCall;
     private TextView mWishAdded;
-    private ImageButton mWishlist;
     private int wish = 0;
     private String productName;
-    private ProgressBar mDetailProgress;
-    private ImageButton mShare;
-    private ImageButton mCall;
-
-
 
     public DetailFragment() {
         // Required empty public constructor
@@ -83,7 +93,6 @@ public class DetailFragment extends LifecycleFragment {
     }
 
     /*------------------------------- Lifecycle -------------------------------*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,18 +147,12 @@ public class DetailFragment extends LifecycleFragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_detail, container, false);
+        ButterKnife.bind(this, v);
 
-        mProductName = (TextView) v.findViewById(R.id.product_name);
-        mProductPrice = (TextView) v.findViewById(R.id.product_price);
-        mProductImage = (ImageView) v.findViewById(R.id.product_image);
-        mProductLocation = (TextView) v.findViewById(R.id.product_location);
-        mProductInfo = (TextView) v.findViewById(R.id.product_info);
-        mWishlist = (ImageButton) v.findViewById(R.id.wishlist_detail_btn);
         mWishAdded = (TextView) v.findViewById(R.id.tv_added_wishlist);
-        mDetailProgress = (ProgressBar) v.findViewById(R.id.shop_detail_progress);
-        mCall = (ImageButton) v.findViewById(R.id.call_btn);
-        mShare = (ImageButton) v.findViewById(R.id.share_btn);
-
+        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ShopExpandableAppbar);
+        mCollapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppbar);
+        mCall.setBackgroundColor(getResources().getColor(R.color.white));
 
         productName = getArguments().getString("name");
         final String productPrice = getArguments().getString("price" );
@@ -158,15 +161,15 @@ public class DetailFragment extends LifecycleFragment {
         final String details = getArguments().getString("detail");
         Picasso picasso = Picasso.with(getContext());
         picasso.setIndicatorsEnabled(false);
+        mCollapsingToolbarLayout.setTitle(productName);
 
-        //mToolbar.setTitle("Shop");
-
-        mProductName.setText(productName);
-        mProductPrice.setText(String.valueOf("N " +productPrice));
-
-        mProductLocation.setText(location);
+        mProductPrice.setText(String.valueOf("₦" + productPrice));
         mProductInfo.setText(details);
-        mProductPrice.setText("₦" + productPrice);
+        mProductLocation.setText(location);
+        mCall.bringToFront();
+
+
+
         try {
             Picasso.with(getContext()).load(productImage).into(mProductImage, new Callback() {
                 @Override
@@ -179,7 +182,6 @@ public class DetailFragment extends LifecycleFragment {
 
                 }
             });
-            mDetailProgress.setVisibility(View.INVISIBLE);
         }catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
@@ -237,21 +239,21 @@ public class DetailFragment extends LifecycleFragment {
             }
         });
 
-        mShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String whatsAppMessage = "";
-
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, whatsAppMessage);
-                sendIntent.setType("text/plain");
-
-                // Do not forget to add this to open whatsApp App specifically
-                sendIntent.setPackage("com.whatsapp");
-                startActivity(sendIntent);
-            }
-        });
+//        mShare.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String whatsAppMessage = "";
+//
+//                Intent sendIntent = new Intent();
+//                sendIntent.setAction(Intent.ACTION_SEND);
+//                sendIntent.putExtra(Intent.EXTRA_TEXT, whatsAppMessage);
+//                sendIntent.setType("text/plain");
+//
+//                // Do not forget to add this to open whatsApp App specifically
+//                sendIntent.setPackage("com.whatsapp");
+//                startActivity(sendIntent);
+//            }
+//        });
 
         // Inflate the layout for this fragment
         return v;

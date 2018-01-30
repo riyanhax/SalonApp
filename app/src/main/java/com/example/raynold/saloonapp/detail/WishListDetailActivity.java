@@ -19,9 +19,6 @@ public class WishListDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wsh_list_detail);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.detail_wish);
-        setSupportActionBar(mToolbar);
-
         Intent i = getIntent();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -36,22 +33,10 @@ public class WishListDetailActivity extends BaseActivity {
             int saved = i.getIntExtra("saved", 0);
             String details = i.getStringExtra("detail");
 
-            getSupportActionBar().setTitle(name);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
             detailFragment = DetailFragment.newInstance(id, name, image,location,details, price,saved);
 
             addFragmentToActivity(fragmentManager,detailFragment,R.id.root_fragment_detail, DETAIL_FRAG);
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

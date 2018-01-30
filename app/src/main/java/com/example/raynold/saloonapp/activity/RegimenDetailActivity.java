@@ -2,6 +2,7 @@ package com.example.raynold.saloonapp.activity;
 
 import android.content.Intent;
 import android.media.Image;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,28 +12,33 @@ import android.widget.TextView;
 
 import com.example.raynold.saloonapp.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RegimenDetailActivity extends AppCompatActivity {
 
-    private Toolbar mToolbar;
-    private ImageView mImageView;
-    private TextView mDetailView;
-    private TextView mCleanseView;
-    private TextView mConditionView;
-    private TextView mMoistureView;
-    private TextView mStyleView;
+    @BindView(R.id.regimen_imageview)
+    ImageView mImageView;
+    @BindView(R.id.regimen_hair_detail)
+    TextView mDetailView;
+    @BindView(R.id.cleanse_textview)
+    TextView mCleanseView;
+    @BindView(R.id.conditon_textview)
+    TextView mConditionView;
+    @BindView(R.id.moisture_textview)
+    TextView mMoistureView;
+    @BindView(R.id.style_textview)
+    TextView mStyleView;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regimen_detail);
-
-        mToolbar = (Toolbar) findViewById(R.id.regimen_detail_toolbar);
-        mImageView = (ImageView) findViewById(R.id.regimen_imageview);
-        mDetailView = (TextView) findViewById(R.id.regimen_hair_detail);
-        mCleanseView = (TextView) findViewById(R.id.cleanse_textview);
-        mConditionView = (TextView) findViewById(R.id.conditon_textview);
-        mMoistureView = (TextView) findViewById(R.id.moisture_textview);
-        mStyleView = (TextView) findViewById(R.id.style_textview);
+        ButterKnife.bind(this);
+        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandableAppbar);
+        mCollapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppbar);
 
         Intent getIntent = getIntent();
         String hairName = getIntent.getStringExtra("name");
@@ -43,6 +49,8 @@ public class RegimenDetailActivity extends AppCompatActivity {
         String style = getIntent.getStringExtra("style");
         int imageRes = getIntent.getIntExtra("pic", 0);
 
+        mCollapsingToolbarLayout.setTitle(hairName);
+
         mDetailView.setText(detail);
         mCleanseView.setText(cleanse);
         mConditionView.setText(condition);
@@ -50,10 +58,6 @@ public class RegimenDetailActivity extends AppCompatActivity {
         mMoistureView.setText(moisture);
         mImageView.setImageResource(imageRes);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(hairName);
     }
 
     @Override
